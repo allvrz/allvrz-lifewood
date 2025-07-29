@@ -1,4 +1,3 @@
-#!/bin/bash
 # This script creates the firebase-init.js file from environment variables
 
 cat << EOF > firebase-init.js
