@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- meta description-->
+    <meta name="description" content="Lifewood harnesses the power of AI and Big Data to empower businesses globally. Discover our innovative solutions in data acquisition, annotation, and AI strategy.">
+    <title>Lifewood Data Technology</title>
+    <link rel="icon" type="image/png" href="diamond.png">
+    <link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+    <script src="script.js" defer></script>
+
+    <!-- 1. FONT IMPORT (Add this to the <head> of your HTML) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container nav-container">
+            <a href="admin.html" class="logo">
+                <img src="lifewood-logo.png" alt="Lifewood AI Logo">
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" aria-label="Open navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- New Global Hero Section -->
+        <section class="global-hero">
+            <div class="global-hero-bg">
+                <video autoplay muted loop playsinline>
+                    <!-- Make sure the path to your video file is correct -->
+                    <source src="intro-vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+            <div class="container hero-content-centered">
+                <div class="hero-main-content">
+                    <h1 class="hero-tagline">ALWAYS ON NEVER OFF</h1>
+                    <!-- Animated Statistics Section -->
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <h2 class="stat-number" data-target="34738">0</h2>
+                            <p>Devoted Specialists</p>
+                        </div>
+                        <div class="stat-item">
+                            <h2 class="stat-number" data-target="25">0</h2>
+                            <p>Delivery Sites</p>
+                        </div>
+                        <div class="stat-item">
+                            <h2 class="stat-number" data-target="16">0</h2>
+                            <p>Countries on 4 Continents</p>
+                        </div>
+                        <div class="stat-item">
+                            <h2 class="stat-number" data-target="50">0+</h2>
+                            <p>Language Capabilities</p>
+                        </div>
+                    </div>
+                    <!-- NEW: Apply Now Button -->
+            <div class="hero-actions">
+                <button id="openApplyModalBtn" class="play-video-button" aria-label="Open job application form">
+                    <span>Apply Now</span>
+                </button>
+            </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Be Amazed Line-->
+        <section class="minimalist-image-section">
+        <div class="container">
+            <img src="be-amazed-line.png" alt="Be Amazed tagline" class="minimalist-logo-image">
+        </div>
+    </section>
+
+         <!-- About Us Preview Section (New) -->
+        <section class="about-us-preview">
+    <div class="about-container">
+        
+        <!-- Left Column: Video -->
+<div class="about-video-wrapper animate-on-scroll">
+    <video autoplay loop muted playsinline>
+        <!-- 
+          IMPORTANT: 
+          1. Provide BOTH .mp4 and .webm formats for best browser compatibility.
+          2. Replace these placeholder paths with the actual paths to your video files.
+        -->
+        <source src="about-preview.mp4" type="video/mp4">
+        <!-- Fallback for very old browsers -->
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+        <!-- Right Column: Content -->
+<div class="about-content-wrapper">
+    <h2 class="headline animate-on-scroll">Pioneering The Future</h2>
+    <h1 class="display-line animate-on-scroll">We Build What's Next.</h1>
+    
+    <p class="animate-on-scroll">
+        At Lifewood, we are your strategic partner in navigating the complexities of the digital age. We harness the power of artificial intelligence to transform vast seas of data into actionable insights, illuminating the path to unprecedented growth and efficiency.
+    </p>
+    <p class="animate-on-scroll">
+        Our mission extends beyond technology. We cultivate a culture of innovation, challenging conventional thinking and co-creating solutions that redefine entire industries. We empower your business not just to adapt, but to lead.
+    </p>
+
+    <div class="features-grid">
+        <div class="feature-item animate-on-scroll">
+            <div class="feature-icon">
+                <!-- Icon: AI/Brain -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.06 11.9C9.72 11.23 10.83 11 12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-1a2 2 0 0 1-2-2V9a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v2.1Z"/><path d="M14.94 12.1C14.28 12.77 13.17 13 12 13h-1a2 2 0 0 0-2 2v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h1a2 2 0 0 0 2-2V9a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v2.1Z"/></svg>
+            </div>
+            <div>
+                <h3>AI-Driven Strategy</h3>
+                <p>Leveraging machine learning to unlock predictive insights and automate success.</p>
+            </div>
+        </div>
+        <div class="feature-item animate-on-scroll">
+            <div class="feature-icon">
+                <!-- Icon: Innovation/Lightbulb -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.09 16.5C15.09 14.57 17.59 13 20 13s5 1.57 5 3.5c0 1.93-2.5 3.5-5 3.5s-5-1.57-5-3.5Z"/><path d="M4 13c0 1.66 2.16 3 4.5 3s4.5-1.34 4.5-3-2.16-3-4.5-3-4.5 1.34-4.5 3Z"/><path d="M4 13c0-1.93 2.5-3.5 5-3.5s5 1.57 5 3.5c0 1.93-2.5 3.5-5 3.5s-5-1.57-5-3.5Z"/><path d="M14 5c0 1.66 2.16 3 4.5 3s4.5-1.34 4.5-3-2.16-3-4.5-3-4.5 1.34-4.5 3Z"/><path d="M4 5c0 1.93 2.5 3.5 5 3.5s5-1.57 5-3.5A5.07 5.07 0 0 0 9 1.5C6.5 1.5 4 3.07 4 5Z"/></svg>
+            </div>
+            <div>
+                <h3>Data-to-Decision</h3>
+                <p>Transforming raw data into clear, decisive actions that drive your business forward.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Wrapper div for centering the button -->
+    <div class="cta-container animate-on-scroll">
+        <a href="about.html" class="cta-button">Discover Our Mission ></a>
+    </div>
+</div>
+</div>
+</section>
+
+<!-- SERVICES PREVIEW SECTION -->
+<section class="services-preview-section">
+    <div class="container">
+        
+        <h2 class="section-title animate-on-scroll">Our Core Services</h2>
+        <p class="section-subtitle animate-on-scroll">
+            AI-Powered. Data-Driven. Business-Transformed. 
+        </p>
+
+        <div class="services-grid">
+            
+            <!-- Service Card 1 (Featured) - Using a proper <img> tag -->
+<a href="services.html#ai-analytics" class="service-card is-featured animate-on-scroll">
+    
+    <img src="data-acquisition.png" alt="A team analyzing complex data visualizations on computer screens">
+
+    <!-- The overlay and text remain the same -->
+    <div class="card-overlay">
+        <h3>Data Acquisition</h3>
+        <p>Sourcing the essential datasets that bring your artificial intelligence to life.</p>
+        <div class="card-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+    </div>
+</a>
+
+            <!-- Service Card 2 -->
+            <a href="services.html#ai-analytics" class="service-card is-featured animate-on-scroll">
+    
+    <img src="be-amazed.png" alt="A team analyzing complex data visualizations on computer screens">
+                
+</a>
+
+            <!-- Service Card 3 -->
+            <a href="services.html#ai-analytics" class="service-card is-featured animate-on-scroll">
+    
+    <img src="data-collection.png" alt="A team analyzing complex data visualizations on computer screens">
+
+    <!-- The overlay and text remain the same -->
+    <div class="card-overlay">
+        <h3>Data Collection</h3>
+        <p>Systematically gathering targeted text, speech, and media to build highly specific and purposeful datasets.</p>
+        <div class="card-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+    </div>
+</a>
+
+            <!-- Service Card 4 -->
+            <a href="services.html#ai-analytics" class="service-card is-featured animate-on-scroll">
+    
+    <img src="data-annotation.png" alt="A team analyzing complex data visualizations on computer screens">
+
+    <!-- The overlay and text remain the same -->
+    <div class="card-overlay">
+        <h3>Data Annotation</h3>
+        <p>Transforming raw data into smart data by adding descriptive labels for machine learning applications.</p>
+        <div class="card-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+    </div>
+</a>
+            <!-- Service Card 5 -->
+             <a href="services.html#ai-analytics" class="service-card is-featured animate-on-scroll">
+    
+    <img src="data-curation.png" alt="A team analyzing complex data visualizations on computer screens">
+
+    <!-- The overlay and text remain the same -->
+    <div class="card-overlay">
+        <h3>Data Curation</h3>
+        <p>Refining and organizing datasets into a high-quality, reliable, and accessible collection for ongoing use.</p>
+        <div class="card-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+    </div>
+</a>
+            <!-- Service Card 6 -->
+             <a href="services.html#ai-analytics" class="service-card is-featured animate-on-scroll">
+    
+    <img src="data-validation.png" alt="A team analyzing complex data visualizations on computer screens">
+
+    <!-- The overlay and text remain the same -->
+    <div class="card-overlay">
+        <h3>Data Validation</h3>
+        <p>Verifying the accuracy, consistency, and integrity of your data to ensure it is trustworthy and fit for purpose.</p>
+        <div class="card-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+    </div>
+</a>
+
+        </div>
+    </div>
+</section>
+
+<!-- ================================================== -->
+<!-- == NEW: PROJECTS PREVIEW CAROUSEL SECTION       == -->
+<!-- ================================================== -->
+<section class="section projects-carousel-section bg-paper">
+    <div class="container">
+        <div class="text-center" style="margin-bottom: 50px;">
+            <span class="tag animate-on-scroll">OUR WORK IN ACTION</span>
+            <h2 class="headline-text animate-on-scroll">Featured Projects</h2>
+        </div>
+        
+        <!-- index.html -->
+
+<!-- The Swiper Carousel Container -->
+<div class="team-carousel-container animate-on-scroll">
+    <div class="swiper team-carousel">
+        <div class="swiper-wrapper">
+            
+            <!-- Project Slide 1: AI Data Extraction -->
+            <div class="swiper-slide">
+                <a href="projects.html" class="project-card-link">
+                <div class="team-card">
+                    <div class="team-card-image">
+                        <img src="proj-data-extraction.jpg" alt="AI Data Extraction project">
+                    </div>
+                    <div class="team-card-content">
+                        <div>
+                            <h3>AI Data Extraction</h3>
+                            <p class="title">Automated Information Retrieval</p>
+                        </div>
+                        <!-- NEW: The arrow element that appears on hover -->
+                        <div class="project-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            
+            <!-- Project Slide 2: Genealogy Processing -->
+            <div class="swiper-slide">
+                <a href="projects.html" class="project-card-link">
+                <div class="team-card">
+                    <div class="team-card-image">
+                        <img src="proj-genealogy.jpg" alt="Genealogy Processing project">
+                    </div>
+                    <div class="team-card-content">
+                        <div>
+                            <h3>Genealogy Processing</h3>
+                            <p class="title">Historical Document Analysis</p>
+                        </div>
+                        <div class="project-arrow">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            
+            <!-- Project Slide 3: Natural Language Processing -->
+            <div class="swiper-slide">
+                <a href="projects.html" class="project-card-link">
+                <div class="team-card">
+                    <div class="team-card-image">
+                        <img src="proj-nlp.jpg" alt="Natural Language Processing project">
+                    </div>
+                    <div class="team-card-content">
+                        <div>
+                            <h3>NaturalLanguage Processing</h3>
+                            <p class="title">Sentiment & Intent Analysis</p>
+                        </div>
+                        <div class="project-arrow">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+            
+            <!-- Project Slide 4: Autonomous Driving Tech -->
+            <div class="swiper-slide">
+                <a href="projects.html" class="project-card-link">
+                <div class="team-card">
+                    <div class="team-card-image">
+                       <img src="proj-auto.jpg" alt="Autonomous Driving Technology project">
+                    </div>
+                    <div class="team-card-content">
+                        <div>
+                           <h3>Autonomous Driving Tech</h3>
+                           <p class="title">Computer Vision & Annotation</p>
+                        </div>
+                       <div class="project-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                       </div>
+                   </div>
+                </div>
+                </a>
+            </div>
+
+            <!-- Project Slide 5: Machine Learning Enablement -->
+            <div class="swiper-slide">
+                <a href="projects.html" class="project-card-link">
+                <div class="team-card">
+                    <div class="team-card-image">
+                       <img src="proj-machine-learning.jpg" alt="Machine Learning Enablement project">
+                    </div>
+                    <div class="team-card-content">
+                        <div>
+                            <h3>MachineLearning Enablement</h3>
+                            <p class="title">Predictive Analytics & Insights</p>
+                        </div>
+                        <div class="project-arrow">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </div>
+                  </div>
+                </div>
+                </a>
+            </div>
+
+            <!-- Project Slide 6: AI-Enabled Customer Service -->
+            <div class="swiper-slide">
+                <a href="projects.html" class="project-card-link">
+                <div class="team-card">
+                    <div class="team-card-image">
+                       <img src="proj-ai-cr.jpeg" alt="AI-Enabled Customer Service project">
+                    </div>
+                    <div class="team-card-content">
+                        <div>
+                            <h3>AI-Enabled CustomerService</h3>
+                            <p class="title">Intelligent Chatbots & Automation</p>
+                        </div>
+                         <div class="project-arrow">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                         </div>
+                     </div>
+                </div>
+                </a>
+            </div>
+
+            <!-- Project Slide 7: Computer Vision -->
+            <div class="swiper-slide">
+                <a href="projects.html" class="project-card-link">
+                <div class="team-card">
+                    <div class="team-card-image">
+                       <img src="proj-computer-vision.jpg" alt="Computer Vision project">
+                    </div>
+                    <div class="team-card-content">
+                        <div>
+                            <h3>Computer Vision</h3>
+                            <p class="title">Image & Video Analysis</p>
+                        </div>
+                        <div class="project-arrow">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <!-- Navigation Arrows -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+    <!-- Pagination Dots -->
+    <div class="swiper-pagination"></div>
+</div>
+    </div>
+    </div>
+</section>
+        
+        <!-- CTA Section -->
+        <section class="section cta-section">
+            <div class="container">
+                <div class="cta-content fade-in">
+                    <div>
+                        <h2 class="headline-text">Ready to Gain Your Edge?</h2>
+                        <p>Let's begin the conversation about your AI journey. Our global team is ready to help you innovate.</p>
+                    </div>
+                    <a href="contact.html" class="btn btn-secondary">Start the Conversation</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- The rest of the page content can follow -->
+         <section class="section bg-paper">
+                    <div class="container text-center fade-in">
+                       <h3 class="accent-text">AI Drives Big Data</h3>
+                       <h2 class="headline-text">Big Data Fuels AI. This is the Future.</h2>
+                       <p>It’s only possible with a push in the right direction. Lifewood can show you where to start to uncover the fullest potential on your AI journey with industry-leading solutions and services.</p>
+                   </div>
+               </section>
+    </main>
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="admin.html" class="logo">
+                        <img src="lifewood-logo.png" alt="Lifewood AI Logo">
+                    </a>
+                    <p>Empowering business through the transformative potential of AI and Big Data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navigate</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="projects.html">Projects</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href= https://www.linkedin.com/company/lifewood-data-technology-ltd.?originalSubdomain=ph>LinkedIn</a></li>
+                        <li><a href="https://www.youtube.com/@LifewoodDataTechnology/videos">Youtube</a></li>
+                    
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p>Global HQ<br>Philippines<br>contact@lifewood.dev</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Lifewood. All Rights Reserved. | A B2B AI Solutions Provider.</p>
+            </div>
+        </div>
+        <a href="#" class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</a>
+    </footer>
+<!-- =================================== -->
+<!-- == NEW: JOB APPLICATION MODAL    == -->
+<!-- =================================== -->
+<div id="applicationModal" class="project-modal">
+    <div class="project-modal-content application-modal-content">
+        <button id="closeApplicationModalBtn" class="close-modal-btn" aria-label="Close application form">×</button>
+        
+        <div class="application-form-container">
+            <h2>Job Application</h2>
+            <p>We're excited to see your application. Please fill out the form below.</p>
+            
+            <form id="jobApplicationForm" class="contact-form">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" readonly style="background-color: #e9ecef;">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="degree">Degree</label>
+                    <input type="text" id="degree" name="degree" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="projectAppliedFor">Project Applied for</label>
+                    <select id="projectAppliedFor" name="projectAppliedFor" required>
+                        <option value="" disabled selected>Select a Project</option>
+                        <option value="AI Data Extraction">AI Data Extraction</option>
+                        <option value="Machine Learning Enablement">Machine Learning Enablement</option>
+                        <option value="Genealogy">Genealogy</option>
+                        <option value="Natural Language Processing">Natural Language Processing</option>
+                        <option value="AI-Enabled Customer Service">AI-Enabled Customer Service</option>
+                        <option value="Computer Vision">Computer Vision</option>
+                        <option value="Autonomous Driving Technology">Autonomous Driving Technology</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="experience">Relevant Job Experience</label>
+                    <textarea id="experience" name="experience" rows="4" required></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="resumeLink">Resume Link (Google Drive, LinkedIn, etc.)</label>
+                    <input type="url" id="resumeLink" name="resumeLink" placeholder="https://..." required>
+                </div>
+                
+                <div class="form-row">
+    <div class="input-group">
+        <label for="startHour">Available Start Time</label>
+        <div class="time-picker-group">
+            <select id="startHour" name="startHour" required></select>
+            <select id="startMinute" name="startMinute" required></select>
+            <select id="startPeriod" name="startPeriod" required></select>
+        </div>
+    </div>
+    <div class="input-group">
+        <label for="endHour">Available End Time</label>
+        <div class="time-picker-group">
+            <select id="endHour" name="endHour" required></select>
+            <select id="endMinute" name="endMinute" required></select>
+            <select id="endPeriod" name="endPeriod" required></select>
+        </div>
+    </div>
+</div>
+
+                <div class="form-submit-wrapper">
+                    <button type="submit" class="btn-submit-v2">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+</body>
+</html>

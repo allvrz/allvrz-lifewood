@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Lifewood</title>
+    <link rel="icon" type="image/png" href="diamond.png">
+    <link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body class="login-page-body">
+
+    <div class="login-container">
+        <form id="loginForm" class="login-form">
+            <div class="login-logo">
+                <a href="index.html"><img src="lifewood-logo.png" alt="Lifewood Logo"></a>
+            </div>
+            <h2>Admin Login</h2>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div id="loginError" class="login-error"></div>
+            <button type="submit" class="btn-submit-v2">Login</button>
+        </form>
+    </div>
+
+</body>
+</html>

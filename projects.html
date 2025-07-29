@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifewood | Our Work & Projects</title>
+    <link rel="icon" type="image/png" href="diamond.png">
+    <link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container nav-container">
+            <a href="admin.html" class="logo">
+                <img src="lifewood-logo.png" alt="Lifewood AI Logo">
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="projects.html" class="active">Projects</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" aria-label="Open navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+<main>
+    <!-- ================================================== -->
+    <!-- == NEW: PROJECTS VIDEO HERO SECTION           == -->
+    <!-- ================================================== -->
+    <section class="projects-video-hero">
+        <div class="video-hero-bg">
+            <video autoplay loop muted playsinline poster="project-top-sec.mp4">
+                <!-- IMPORTANT: Replace with the path to your projects video -->
+                <source src="project-top-sec.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="video-hero-content fade-in">
+            <h1 class="headline-text">Making It Real</h1>
+            <p>Dive into our portfolio of real-world applications. We turn complex data challenges into measurable success, defining our work for global partners. </p>
+            <a href="#first-project" class="scroll-down-btn" aria-label="Scroll down to projects">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Be Amazed Line - This can be removed or kept based on your preference -->
+    <section class="minimalist-image-section">
+        <div class="container">
+            <img src="be-amazed-line.png" alt="Be Amazed tagline" class="minimalist-logo-image">
+        </div>
+    </section>
+
+    <!-- UPDATED: Section 1 with an ID for scrolling -->
+    <div id="first-project" class="page-container">
+      <div class="parallax-rectangle bg-data-extraction">
+        <div class="parallax-overlay"></div>
+        <div class="cta-content">
+          <h2>AI Data Extraction</h2>
+          <p>We build intelligent systems to automatically extract structured information from unstructured documents, images, and web pages.</p>
+          <a href="#" class="cta-button open-project-modal" data-project="data-extraction">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Machine Learning Enablement -->
+    <div class="page-container">
+      <div class="parallax-rectangle bg-machine-learning">
+        <div class="parallax-overlay"></div>
+        <div class="cta-content">
+          <h2>Machine Learning Enablement</h2>
+          <p>Empowering your business with custom machine learning models that predict outcomes and uncover hidden insights.</p>
+          <a href="#" class="cta-button open-project-modal" data-project="ml-enablement">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Genealogy -->
+    <div class="page-container">
+      <div class="parallax-rectangle bg-genealogy">
+        <div class="parallax-overlay"></div>
+        <div class="cta-content">
+          <h2>Genealogy</h2>
+          <p>Explore the deep roots of history and heritage through our comprehensive genealogical data processing and analysis services.</p>
+          <a href="#" class="cta-button open-project-modal" data-project="genealogy">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Natural Language Processing -->
+    <div class="page-container">
+      <div class="parallax-rectangle bg-nlp">
+        <div class="parallax-overlay"></div>
+        <div class="cta-content">
+          <h2>Natural Language Processing</h2>
+          <p>Unlocking the value of text data with advanced NLP for sentiment analysis, text summarization, and entity recognition.</p>
+          <a href="#" class="cta-button open-project-modal" data-project="nlp">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: AI-Enabled Customer Service -->
+    <div class="page-container">
+      <div class="parallax-rectangle bg-customer-service">
+        <div class="parallax-overlay"></div>
+        <div class="cta-content">
+          <h2>AI-Enabled Customer Service</h2>
+          <p>Transforming customer support with intelligent chatbots and AI-driven tools for faster, more accurate resolutions.</p>
+          <a href="#" class="cta-button open-project-modal" data-project="ai-customer-service">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Computer Vision -->
+    <div class="page-container">
+      <div class="parallax-rectangle bg-computer-vision">
+        <div class="parallax-overlay"></div>
+        <div class="cta-content">
+          <h2>Computer Vision</h2>
+          <p>Developing systems that can "see" and interpret the world, from object detection in images to real-time video analysis.</p>
+          <a href="#" class="cta-button open-project-modal" data-project="computer-vision">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 7: Autonomous Driving Technology -->
+    <div class="page-container">
+      <div class="parallax-rectangle bg-autonomous-driving">
+        <div class="parallax-overlay"></div>
+        <div class="cta-content">
+          <h2>Autonomous Driving Technology</h2>
+          <p>Providing high-quality data annotation and validation services crucial for training safe and reliable autonomous vehicles.</p>
+          <a href="#" class="cta-button open-project-modal" data-project="autonomous-driving">Read More</a>
+        </div>
+      </div>
+    </div>
+</main>
+
+    <!-- ================================================== -->
+    <!-- == NEW: PROJECT DETAIL MODAL STRUCTURE        == -->
+    <!-- ================================================== -->
+    <div id="projectModal" class="project-modal">
+        <div class="project-modal-content">
+            <button id="closeProjectModal" class="close-modal-btn" aria-label="Close project details">×</button>
+            <div id="modal-content-target">
+                <!-- Project details will be injected here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+        <!-- Data Extraction Details -->
+<!-- ================================================== -->
+<!-- == FINALIZED HIDDEN PROJECT DETAIL CONTENT    == -->
+<!-- ================================================== -->
+<!-- ================================================== -->
+<!-- == FINALIZED HIDDEN PROJECT DETAIL CONTENT    == -->
+<!-- ================================================== -->
+<div class="hidden-project-details">
+
+    <!-- 1. Data Extraction Details -->
+    <div id="project-detail-data-extraction">
+        <img class="modal-project-image" src="data-extraction.png" alt="High-tech data scanning operation">
+        <div class="modal-project-text">
+            <span class="modal-project-tag">Data Solutions</span>
+            <h2>AI-Powered Data Extraction</h2>
+            <h3 class="sub-headline">From Any Source, to Any Scale</h3>
+            <p>In the digital age, raw information is everywhere, but actionable data is scarce. Our AI Data Extraction service bridges this gap, transforming unstructured content from countless sources into highly organized, analysis-ready datasets.</p>
+        </div>
+        <div class="modal-project-features">
+            <h3 class="headline-text">Our Comprehensive Approach</h3>
+            <div class="feature-grid-3col">
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><h4>Advanced On-Site Acquisition</h4><p>Utilizing state-of-the-art scanning to digitize physical documents and assets with precision.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg></div><h4>Aerial & Drone Imaging</h4><p>Deploying advanced drone photography to capture high-resolution image data for analysis.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h4>Strategic Alliances</h4><p>Forging partnerships with corporations, archives, and governments to unlock exclusive datasets.</p></div>
+            </div>
+        </div>
+        <div class="modal-project-cta">
+            <a href="contact.html" class="btn btn-modal-contact">Contact Our Experts ></a>
+        </div>
+    </div>
+
+    <!-- 2. ML Enablement Details -->
+    <div id="project-detail-ml-enablement">
+        <img class="modal-project-image" src="machine-learning.png" alt="Abstract visualization of a large language model network">
+        <div class="modal-project-text"><span class="modal-project-tag">AI & LLM Solutions</span><h2>Machine Learning Enablement</h2><h3 class="sub-headline">Fueling the Next Generation of AI</h3><p>A machine learning model is only as powerful as the data it's trained on. We provide flexible, curated data solutions that empower ML systems, especially through Reinforcement Learning from Human Feedback (RLHF).</p></div>
+        <div class="modal-project-features"><h3 class="headline-text">Advanced Model Training</h3><div class="feature-grid-3col">
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h4>Human-in-the-Loop Feedback</h4><p>Integrating human expertise to guide AI learning, dramatically improving model accuracy and alignment.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div><h4>Curated Training Datasets</h4><p>Building purposeful datasets that directly address your model's specific learning objectives.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div><h4>Efficient Annotation at Scale</h4><p>Accelerating data collection and labeling without the logistical burden of managing a large workforce.</p></div>
+        </div></div>
+        <div class="modal-project-cta">
+            <a href="contact.html" class="btn btn-modal-contact">Contact Our Experts ></a>
+        </div>
+    </div>
+
+    <!-- 3. Genealogy Details -->
+    <div id="project-detail-genealogy">
+        <img class="modal-project-image" src="project-genea.png" alt="Digitization of historical genealogical records"><div class="modal-project-text"><span class="modal-project-tag">Historical Data & Archives</span><h2>AI-Powered Genealogy Processing</h2><h3 class="sub-headline">Illuminating the Past, Preserving the Future</h3><p>At Lifewood, we use the power of AI to process vast archives of genealogical material at unprecedented speed and scale. Lifewood has more than 18 years of experience capturing, scanning, and processing genealogical data. This field is our heritage, giving us unparalleled depth of knowledge in all forms of genealogical indexing.</p></div>
+        <div class="modal-project-features"><h3 class="headline-text">Unmatched Expertise</h3><div class="feature-grid-3col">
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v0a2 2 0 0 0 2 2z"></path><path d="M15 2v20"></path></svg></div><h4>Any Document, Any Condition</h4><p>Our AI models are trained to read and interpret documents of any age, from pristine registers to faded, handwritten letters.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 7 10-7 10-7-10 7-10z"></path><path d="m22 12-5 10-5-10 5-10 5 10z"></path></svg></div><h4>Processing at Scale</h4><p>Leveraging AI-driven workflows to process millions of records with speed and accuracy for large-scale archival projects.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5 2 12l8.5-8.5"></path><path d="m22 12-8.5 8.5"></path><line x1="12" y1="2" x2="12" y2="22"></line></svg></div><h4>Multi-Lingual Expertise</h4><p>Our systems are equipped to handle diverse languages and dialects, ensuring no piece of history is lost in translation.</p></div>
+        </div></div>
+        <div class="modal-project-cta">
+            <a href="contact.html" class="btn btn-modal-contact">Contact Our Experts ></a>
+        </div>
+    </div>
+
+    <!-- 4. NLP Details -->
+    <div id="project-detail-nlp">
+        <img class="modal-project-image" src="proj-nlp.jpg" alt="Visualization of natural language processing"><div class="modal-project-text"><span class="modal-project-tag">Language & Communication</span><h2>Natural Language Processing</h2><h3 class="sub-headline">The Global Conversation, Decoded</h3><p>In partnership with the world's most advanced technology companies, we develop NLP solutions that unlock meaning from text and audio across 50+ languages, managing projects involving tens of thousands of conversations.</p></div>
+        <div class="modal-project-features"><h3 class="headline-text">Data-Driven Linguistic Solutions</h3><div class="feature-grid-3col">
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><h4>Global Language Capabilities</h4><p>With a presence in 16 countries, we offer access to native speakers in over 50 languages for authentic data collection.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20v-4M18 20v-2"></path><path d="M12 14a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2z"></path></svg></div><h4>High-Volume Transcription</h4><p>We are experts in collecting and transcribing tens of thousands of conversations for robust AI training.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8a6 6 0 0 0-8.3-8.3"/><path d="M12.3 12a2 2 0 0 0-2.6-2.6"/><path d="M12 18a6 6 0 0 0 6-6"/></svg></div><h4>Performance Analytics</h4><p>Using tools like Power BI, we constantly track progress and analyze performance to ensure continuous improvement.</p></div>
+        </div></div>
+        <div class="modal-project-cta">
+            <a href="contact.html" class="btn btn-modal-contact">Contact Our Experts ></a>
+        </div>
+    </div>
+
+    <!-- 5. AI Customer Service Details -->
+    <div id="project-detail-ai-customer-service">
+        <img class="modal-project-image" src="ai-crs.png" alt="A user interacting with an intelligent AI chatbot"><div class="modal-project-text"><span class="modal-project-tag">Business Transformation</span><h2>AI-Enabled Customer Service</h2><h3 class="sub-headline">Transforming Relationships, One Interaction at a Time</h3><p>AI-enabled customer service offers the most direct path to delivering personalized, proactive, and immediate experiences that modern customers demand, creating a cycle of improved service, heightened satisfaction, and lasting loyalty.</p></div>
+        <div class="modal-project-features"><h3 class="headline-text">The AI Advantage in Customer Care</h3><div class="feature-grid-3col">
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div><h4>Unmatched Speed</h4><p>AI platforms handle inquiries with incredible speed, providing instant resolutions and reducing customer wait times.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div><h4>Personalized Experiences</h4><p>Our systems analyze customer data in real-time to deliver tailored responses and suggestions that drive engagement.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg></div><h4>Increased Customer Loyalty</h4><p>By providing consistent, high-quality support, AI helps build trust and satisfaction, leading to measurable customer retention.</p></div>
+        </div></div>
+        <div class="modal-project-cta">
+            <a href="contact.html" class="btn btn-modal-contact">Contact Our Experts ></a>
+        </div>
+    </div>
+
+    <!-- 6. Computer Vision Details -->
+    <div id="project-detail-computer-vision">
+        <img class="modal-project-image" src="computer-vision.png" alt="Advanced computer vision with object detection"><div class="modal-project-text"><span class="modal-project-tag">Visual Intelligence</span><h2>Computer Vision Data Solutions</h2><h3 class="sub-headline">Training AI to See and Understand the World</h3><p>Teaching an AI to interpret the visual world requires an immense volume of meticulously prepared training data. Our global workforce delivers high-fidelity datasets that capture the subtle nuances of the real world to unlock maximum performance.</p></div>
+        <div class="modal-project-features"><h3 class="headline-text">End-to-End Visual Data Services</h3><div class="feature-grid-3col">
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div><h4>Total Data Solutions</h4><p>We manage the entire data pipeline, from collection and annotation to classification and validation, ensuring quality data.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 22h.5c.5 0 .5-.5.5-1v-1.5c0-.5-.5-1-1-1h-1c-.5 0-1 .5-1 1V21c0 .5.5 1 1 1h.5Z"/><path d="M6.5 22h.5c.5 0 .5-.5.5-1v-1.5c0-.5-.5-1-1-1h-1c-.5 0-1 .5-1 1V21c0 .5.5 1 1 1h.5Z"/><path d="M9 18H2v-1.5c0-.5.5-1 1-1h6c.5 0 1 .5 1 1V18Z"/><path d="M15 18h7v-1.5c0-.5-.5-1-1-1h-6c-.5 0-1 .5-1 1V18Z"/><path d="m7.5 5.5.5-1 .5 1"/><path d="m16.5 5.5.5-1 .5 1"/><path d="M12 6V2.5c0-.5-.5-1-1-1h-1c-.5 0-1 .5-1 1V6"/></svg></div><h4>Diverse Applications</h4><p>Our expertise spans critical industries, including autonomous vehicles, agricultural monitoring, and facial recognition.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div><h4>Meticulously Curated Data</h4><p>We design and deliver high-fidelity datasets that facilitate both deep learning and traditional AI applications, tailored to your needs.</p></div>
+        </div></div>
+        <div class="modal-project-cta">
+            <a href="contact.html" class="btn btn-modal-contact">Contact Our Experts ></a>
+        </div>
+    </div>
+
+    <!-- 7. Autonomous Driving Details -->
+    <div id="project-detail-autonomous-driving">
+        <img class="modal-project-image" src="proj-auto.jpg" alt="A 3D point cloud map for autonomous vehicle navigation"><div class="modal-project-text"><span class="modal-project-tag">Future of Mobility</span><h2>Autonomous Driving Technology</h2><h3 class="sub-headline">Pioneering the Path to Full Autonomy</h3><p>We are taking autonomous technology from theoretical models to real-world application by providing the ultra-high-quality data that self-driving systems depend on, annotating millions of images, videos, and mapping data points.</p></div>
+        <div class="modal-project-features"><h3 class="headline-text">Advanced Data for Cognitive Systems</h3><div class="feature-grid-3col">
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12s2.545-8 7-8c4.454 0 7 8 7 8s-2.545 8-7 8c-4.454 0-7-8-7-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></div><h4>Diverse Mapping Methodology</h4><p>We employ a wide range of data types, including 2D imagery, 3D LiDAR models, and sensor fusion, to build a comprehensive view of the world.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/><path d="M3 9h18"/><path d="M3 15h18"/></svg></div><h4>Precision Annotation at Scale</h4><p>Our teams meticulously annotate millions of data points, identifying everything from pedestrians and vehicles to lane markings.</p></div>
+                <div class="feature-card"><div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><h4>Focus on Safety & Reliability</h4><p>Every dataset we produce is geared towards one primary goal: training safe, robust, and reliable autonomous systems.</p></div>
+        </div></div>
+        <div class="modal-project-cta">
+            <a href="contact.html" class="btn btn-modal-contact">Contact Our Experts ></a>
+        </div>
+    </div>
+
+</div>
+
+
+      <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="admin.html" class="logo">
+                        <img src="lifewood-logo.png" alt="Lifewood AI Logo">
+                    </a>
+                    <p>Empowering business through the transformative potential of AI and Big Data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navigate</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="projects.html">Projects</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+               <div class="footer-col">
+                    <h4>Connect</h4>
+                     <ul>
+                        <li><a href= https://www.linkedin.com/company/lifewood-data-technology-ltd.?originalSubdomain=ph>LinkedIn</a></li>
+                        <li><a href="https://www.youtube.com/@LifewoodDataTechnology/videos">Youtube</a></li>
+                    
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p>Global HQ<br>Philippines<br>contact@lifewood.dev</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Lifewood. All Rights Reserved. | A B2B AI Solutions Provider.</p>
+            </div>
+        </div>
+        <a href="#" class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</a>
+    </footer>
+
+</body>
+</html>

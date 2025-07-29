@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifewood | Our Services</title>
+    <link rel="icon" type="image/png" href="diamond.png">
+    <link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header class="main-header">
+        <!-- Your header remains the same -->
+        <div class="container nav-container">
+            <a href="admin.html" class="logo">
+                <img src="lifewood-logo.png" alt="Lifewood AI Logo">
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="services.html" class="active">Services</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" aria-label="Open navigation menu">
+                <!-- ... -->
+            </button>
+        </div>
+    </header>
+    <main>
+        <!-- ================================================== -->
+<!-- == UNIFIED SERVICES SECTION WITH SINGLE VIDEO BG == -->
+<!-- ================================================== -->
+<section class="section services-unified-section">
+
+    <!-- The single video background for the entire section -->
+    <div class="video-background-wrapper">
+        <video autoplay loop muted playsinline poster="video-poster.jpg">
+            <!-- Make sure this path points to your desired background video -->
+            <source src="service-top-sec.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- A single container to hold ALL content that appears on top of the video -->
+    <div class="container">
+    
+        <!-- Block 1: The Hero Text -->
+        <div class="services-hero-content text-center">
+            <h2 class="hero-reveal-text">
+                Our Services<br><span class="gradient-text">Intelligence, Delivered.</span>
+            </h2>
+            <p class="hero-sub-text">
+                Lifewood offers the full spectrum of AI services to turn your vision into a powerful reality.
+            </p>
+        </div>
+
+        <!-- Block 2: The List of Service Cards -->
+        <div class="services-list-content">
+            <!-- Service Item 1 -->
+            <div class="service-item-enhanced fade-in">
+                <div class="service-item-content">
+                    <div class="service-image-wrapper">
+                       <img src="data-acquisition.png" alt="Data analytics dashboard">
+                    </div>
+                    <div class="service-text-content">
+                        <h3 class="accent-text">1. Data Acquisition</h3>
+                        <p>Data acquisition is the foundational process of sourcing and obtaining raw, unprocessed data from a multitude of sources. This initial step involves gathering diverse datasets that will ultimately be processed, managed, and structured to train and advance artificial intelligence systems.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Service Item 2 -->
+            <div class="service-item-enhanced fade-in">
+                <div class="service-item-content">
+                    <div class="service-image-wrapper">
+                       <img src="data-collection.png" alt="Business strategy meeting">
+                    </div>
+                    <div class="service-text-content">
+                        <h3 class="accent-text">2. Data Collection</h3>
+                        <p>Data collection is the active and systematic process of gathering specific types of information, such as text for sentiment analysis, speech utterances for voice recognition, or audio and video for categorization.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Service Item 3 -->
+            <div class="service-item-enhanced fade-in">
+                <div class="service-item-content">
+                    <div class="service-image-wrapper">
+                       <img src="data-annotation.png" alt="Data annotation process">
+                    </div>
+                    <div class="service-text-content">
+                        <h3 class="accent-text">3. Data Annotation</h3>
+                        <p>Data annotation is the critical process of adding metadata, or labels, to raw data, making it comprehensible for machine learning algorithms. By meticulously tagging elements, we provide the necessary context for training sophisticated models.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Service Item 4 -->
+            <div class="service-item-enhanced fade-in">
+               <div class="service-item-content">
+                   <div class="service-image-wrapper">
+                      <img src="data-curation.png" alt="Data curation process">
+                   </div>
+                   <div class="service-text-content">
+                       <h3 class="accent-text">4. Data Curation</h3>
+                       <p>Data curation involves the active management of a dataset throughout its lifecycle, which includes sifting through raw information, selecting the most relevant parts, and indexing it for easy access and optimized use.</p>
+                   </div>
+               </div>
+           </div>
+           <!-- Service Item 5 -->
+           <div class="service-item-enhanced fade-in">
+               <div class="service-item-content">
+                   <div class="service-image-wrapper">
+                      <img src="data-validation.png" alt="Data validation process">
+                   </div>
+                   <div class="service-text-content">
+                       <h3 class="accent-text">5. Data Validation</h3>
+                       <p>Data validation is a critical quality control process designed to ensure that data is accurate, complete, and consistent. It involves systematically checking the data against a set of predefined rules to confirm its integrity.</p>
+                   </div>
+               </div>
+           </div>
+        </div>
+    </div>
+</section>
+    <!-- ================================================== -->
+<!-- == 2. WORD-BY-WORD KARAOKE TEXT EFFECT SECTION  == -->
+<!-- ================================================== -->
+<section class="section karaoke-section">
+    <div class="container text-center">
+
+        <!-- NEW: The container for the "Be Amazed" logo -->
+        <div class="be-amazed-logo-container animate-on-scroll">
+            <img src="be-amazed-line.png" alt="Be Amazed" class="be-amazed-logo-sm">
+        </div>
+        
+        <!-- UPDATED: Each word is now in its own <span> for individual animation -->
+        <h2 class="karaoke-text animate-on-scroll">
+            <span>AI-Powered.</span> <span>Data-Driven.</span> <span>Business-Transformed.</span>
+        </h2>
+    </div>
+</section>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="admin.html" class="logo">
+                        <img src="lifewood-logo.png" alt="Lifewood AI Logo">
+                    </a>
+                    <p>Empowering business through the transformative potential of AI and Big Data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navigate</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="projects.html">Projects</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href= https://www.linkedin.com/company/lifewood-data-technology-ltd.?originalSubdomain=ph>LinkedIn</a></li>
+                        <li><a href="https://www.youtube.com/@LifewoodDataTechnology/videos">Youtube</a></li>
+                    
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p>Global HQ<br>Philippines<br>contact@lifewood.dev</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Lifewood. All Rights Reserved. | A B2B AI Solutions Provider.</p>
+            </div>
+        </div>
+        <a href="#" class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</a>
+    </footer>
+
+</body>
+</html>

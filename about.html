@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifewood | About Us</title>
+    <link rel="icon" type="image/png" href="diamond.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container nav-container">
+            <a href="admin.html" class="logo">
+                <img src="lifewood-logo.png" alt="Lifewood AI Logo">
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html" class="active">About Us</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" aria-label="Open navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+    
+
+    <main>
+        <section class="about-hero">
+            <div class="about-hero-bg">
+                <video autoplay loop muted playsinline poster="aboutus-top-section.mp4">
+                    <source src="aboutus-top-section.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="container hero-content-centered">
+                <h1 class="headline-text animate-on-scroll">Connecting Intelligence Across the Globe</h1>
+                <p class="animate-on-scroll" style="transition-delay: 0.2s;">We believe in the power of technology to build bridges, form friendships, and create prosperous communities worldwide.</p>
+                <div class="animate-on-scroll" style="transition-delay: 0.4s;">
+                    <button id="play-video-btn" class="play-video-button" aria-label="Play video">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        <span>Play Our Story</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="about-intro">
+                    
+                    <!-- UPDATED: This container now holds the YouTube embed -->
+                    <div class="about-video-container youtube-embed animate-on-scroll">
+                        <iframe 
+                            src="https://www.youtube.com/embed/3-FgnVjYJVA?autoplay=1&mute=1&loop=1&playlist=3-FgnVjYJVA&controls=0&showinfo=0&autohide=1&modestbranding=1" 
+                            title="Lifewood Global Offices" 
+                            frameborder="0" 
+                            allow="autoplay; encrypted-media" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <div class="about-intro-content">
+                        <h3 class="accent-text animate-on-scroll">Lifewood Data Technology<br> Global Offices</h3>
+                        <p class="animate-on-scroll">Lifewood is active in 16 countries. This isn't just a statistic—it's our strength. Our diverse locations allow us to understand local nuances while executing global strategies. We are a team that thrives in the ceaseless motion of business, constantly driving forward.</p>
+                        <p class="animate-on-scroll">We are igniting a culture of innovation that transcends borders. By building bridges and forming new friendships, we are creating a network of dynamic opportunities that empowers businesses and the communities they operate in, unlocking the unlimited possibilities of AI and GPT.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================= -->
+<!-- == UPDATED PILLARS SECTION (to match image)    == -->
+<!-- ================================================= -->
+<<section class="section pillar-section bg-dark">
+    <div class="container text-center">
+        <h3 class="accent-text animate-on-scroll">Our Core Principles</h3>
+        <h2 class="headline-text animate-on-scroll">The Pillars of Lifewood</h2>
+
+        <div class="pillar-grid">
+            <!-- Pillar 1 -->
+            <div class="pillar-card animate-on-scroll">
+                <div class="pillar-card-content">
+                    <h3>Pioneering Transformation</h3>
+                    <p>We don't just adapt to the future; we create it. By igniting a culture of relentless innovation, we see the familiar with fresh eyes and turn radical possibilities into our new reality.</p>
+                </div>
+            </div>
+
+            <!-- Pillar 2 -->
+            <div class="pillar-card animate-on-scroll" style="transition-delay: 0.2s;">
+                 <div class="pillar-card-content">
+                    <h3>Uniting Humanity</h3>
+                    <p>Our mission transcends borders. We build bridges between cultures, forge powerful new connections, and foster a unity of purpose that empowers communities and enriches lives across the globe.</p>
+                </div>
+            </div>
+
+            <!-- Pillar 3 -->
+            <div class="pillar-card animate-on-scroll" style="transition-delay: 0.4s;">
+                 <div class="pillar-card-content">
+                    <h3>The Relentless Pursuit of Lifegood</h3>
+                    <p>Always switched on, never off. This is our unwavering quest—to beat against the current, break through complexity, and build what's next for the betterment of all.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </main>
+
+   <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="admin.html" class="logo">
+                        <img src="lifewood-logo.png" alt="Lifewood AI Logo">
+                    </a>
+                    <p>Empowering business through the transformative potential of AI and Big Data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navigate</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="projects.html">Projects</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                     <ul>
+                        <li><a href= https://www.linkedin.com/company/lifewood-data-technology-ltd.?originalSubdomain=ph>LinkedIn</a></li>
+                        <li><a href="https://www.youtube.com/@LifewoodDataTechnology/videos">Youtube</a></li>
+                    
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p>Global HQ<br>Philippines<br>contact@lifewood.dev</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Lifewood. All Rights Reserved. | A B2B AI Solutions Provider.</p>
+            </div>
+        </div>
+        <a href="#" class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</a>
+    </footer>
+    <!-- =================================== -->
+    <!-- == UPDATED VIDEO MODAL FOR YOUTUBE == -->
+    <!-- =================================== -->
+    <div id="videoModal" class="video-modal">
+        <button id="closeModalBtn" class="close-modal-btn" aria-label="Close video player">×</button>
+        <div class="video-modal-content">
+            <!-- The old <video> tag is replaced by this <iframe> for YouTube -->
+            <iframe 
+                id="youtubeIframe" 
+                src="https://youtu.be/WocWafisMUI?si=TsJ9DQCH2RtqsQwn" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+</body>
+</html>
+
