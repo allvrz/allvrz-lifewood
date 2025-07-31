@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     pendingSnapshot.forEach((doc, index) => { // Added 'index'
                         const app = doc.data();
                         const row = document.createElement('tr');
-                         row.innerHTML = `
+                        row.innerHTML = `
                             <td>${index + 1}</td> <!-- Numbering -->
                             <td>${app.name}</td>
                             <td>${app.email}</td>
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${app.submittedOn.toDate().toLocaleString()}</td>
                             <td>${acceptedOnDate}</td> <!-- New field -->
                             <td>${app.availability}</td>
-                        `;row.innerHTML
+                        `;
                         acceptedTableBody.appendChild(row);
 });
                 }
@@ -152,17 +152,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     unresolvedSnapshot.forEach((doc, index) => { // Added 'index'
                         const con = doc.data();
                         const row = document.createElement('tr');
-                       // Inside renderConcernsTables()
-// ...
-row.innerHTML = `
-    <td>${index + 1}</td>
-    <td>${con.name}</td>
-    <td>${con.email}</td>
-    <td>${con.interests}</td>
-    <td title="${con.message}">${con.message.substring(0, 50)}...</td>
-    <td>${con.submittedOn.toDate().toLocaleString()}</td>
-    <td class="actions-column"><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>
-`;
+                        row.innerHTML = `
+                            <td>${index + 1}</td> <!-- Numbering -->
+                            <td>${con.name}</td>
+                            <td>${con.email}</td>
+                            <td>${con.interests}</td>
+                            <td title="${con.message}">${con.message.substring(0, 50)}...</td>
+                            <td>${con.submittedOn.toDate().toLocaleString()}</td>
+                            <td><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>
+                        `;
                         unresolvedTableBody.appendChild(row);
                     });
                 }
