@@ -3064,3 +3064,30 @@ body.modal-open {
     background-color: #d9534f;
     color: white;
 }
+
+/* style.css */
+
+/* --- NEW: Scrollable Dashboard Tables --- */
+.admin-table-container {
+    /* overflow-x is already set for responsiveness */
+    overflow-y: auto; /* Add vertical scrollbar if content exceeds max-height */
+    max-height: 400px; /* Adjust this value to show more or fewer rows */
+    position: relative; /* Anchor for the sticky header */
+}
+
+.admin-table thead th {
+    position: sticky; /* Makes the header stick to the top */
+    top: 0;
+    z-index: 10; /* Ensures header is above scrolling content */
+    background-color: var(--color-paper); /* Keep the background color */
+}
+
+/* Add a small border to the bottom of the sticky header for separation */
+.admin-table thead th::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-bottom: 2px solid #ddd;
+}
