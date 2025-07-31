@@ -3067,19 +3067,23 @@ body.modal-open {
 
 /* style.css */
 
-/* --- NEW: Scrollable Dashboard Tables --- */
+/* style.css */
+
+/* --- REVISED: Scrollable Dashboard Tables --- */
 .admin-table-container {
-    /* overflow-x is already set for responsiveness */
-    overflow-y: auto; /* Add vertical scrollbar if content exceeds max-height */
-    max-height: 400px; /* Adjust this value to show more or fewer rows */
-    position: relative; /* Anchor for the sticky header */
+    overflow: auto; /* Use 'auto' for both horizontal and vertical scrolling */
+    max-height: 350px; /* Let's make it a bit smaller */
+    position: relative; 
+    background-color: var(--color-white); /* CRUCIAL: A background color is needed for z-index to work correctly */
+    border-radius: 8px; /* This was on the parent, let's ensure it's here too */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05); /* Add a subtle shadow */
 }
 
 .admin-table thead th {
-    position: sticky; /* Makes the header stick to the top */
+    position: sticky;
     top: 0;
-    z-index: 10; /* Ensures header is above scrolling content */
-    background-color: var(--color-paper); /* Keep the background color */
+    z-index: 10;
+    background-color: var(--color-paper);
 }
 
 /* Add a small border to the bottom of the sticky header for separation */
@@ -3092,34 +3096,35 @@ body.modal-open {
     border-bottom: 2px solid #ddd;
 }
 
-/* style.css */
+/* --- REVISED: Compact Table Styles for Single-Line Entries --- */
 
-/* --- NEW: Compact Table Styles for Single-Line Entries --- */
-
-/* 1. Tell all table cells NOT to wrap their content */
+/* 1. Set a fixed layout and prevent text wrapping */
+.admin-table {
+    width: 100%;
+    table-layout: fixed; /* This is key for predictable column widths */
+}
 .admin-table td,
 .admin-table th {
-    white-space: nowrap; /* Prevents text from wrapping to the next line */
+    white-space: nowrap;
 }
 
-/* 2. Give specific columns a fixed, smaller width */
+/* 2. Define widths for specific columns */
 .admin-table th:first-child, /* The '#' column */
 .admin-table td:first-child {
-    width: 50px; /* A small, fixed width for the number */
+    width: 50px;
     text-align: center;
 }
 
-.admin-table th:last-child, /* The 'Actions' column */
-.admin-table td:last-child {
-    width: 120px; /* A fixed width for the button */
+.admin-table th.actions-column, /* The 'Actions' column */
+.admin-table td.actions-column {
+    width: 110px;
     text-align: center;
 }
 
-/* 3. Allow longer text fields to be truncated with an ellipsis (...) */
+/* 3. For all other cells, allow truncation with ellipsis */
 .admin-table td {
-    max-width: 250px;         /* Set a max-width for columns with long text */
-    overflow: hidden;         /* Hide the content that overflows */
-    text-overflow: ellipsis;  /* Add the '...' at the end */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 4. We can be more specific if needed, for example, for the 'email' column */
