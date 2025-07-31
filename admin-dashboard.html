@@ -50,23 +50,24 @@
                 <!-- =================================== -->
                 <!-- == NEW: TABS CONTENT PANELS      == -->
                 <!-- =================================== -->
+                <div class="tab-content-container">
+                    
+                    <!-- Applications Tab Content -->
+                    <div id="applications" class="tab-content active">
 
-<!-- Applications Tab Content -->
-<div id="applications" class="tab-content active">
-    <!-- Pending Applications Table -->
+    <!-- NEW: Pending Applications Table -->
     <div class="admin-table-container">
         <h2>Pending Job Applications</h2>
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>#</th> <!-- NEW -->
                     <th>Name</th>
                     <th>Email</th>
                     <th>Project</th>
                     <th>Resume</th>
                     <th>Submitted On</th>
                     <th>Availability</th>
-                    <th>Actions</th>
+                    <th>Actions</th> <!-- New Column -->
                 </tr>
             </thead>
             <tbody id="pending-applications-body">
@@ -75,19 +76,17 @@
         </table>
     </div>
 
-    <!-- Accepted Applications Table -->
+    <!-- NEW: Accepted Applications Table -->
     <div class="admin-table-container">
         <h2>Accepted Job Applications</h2>
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>#</th> <!-- NEW -->
                     <th>Name</th>
                     <th>Email</th>
                     <th>Project</th>
                     <th>Resume</th>
                     <th>Submitted On</th>
-                    <th>Accepted On</th> <!-- NEW -->
                     <th>Availability</th>
                 </tr>
             </thead>
@@ -96,24 +95,24 @@
             </tbody>
         </table>
     </div>
+
 </div>
 
-<!-- Concerns Tab Content -->
-<div id="concerns" class="tab-content">
-    <!-- Unresolved Concerns Table -->
+                    <!-- Concerns Tab Content -->
+                    <div id="concerns" class="tab-content">
+
+    <!-- NEW: Unresolved Concerns Table -->
     <div class="admin-table-container">
         <h2>Unresolved Concerns</h2>
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>#</th> <!-- NEW -->
                     <th>Name</th>
                     <th>Email</th>
                     <th>Interests</th>
                     <th>Message</th>
                     <th>Submitted On</th>
-                    <th>Actions</th>
-
+                    <th>Actions</th> <!-- New Column -->
                 </tr>
             </thead>
             <tbody id="unresolved-concerns-body">
@@ -122,19 +121,17 @@
         </table>
     </div>
 
-    <!-- Resolved Concerns Table -->
+    <!-- NEW: Resolved Concerns Table -->
     <div class="admin-table-container">
         <h2>Resolved Concerns</h2>
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>#</th> <!-- NEW -->
                     <th>Name</th>
                     <th>Email</th>
                     <th>Interests</th>
                     <th>Message</th>
                     <th>Submitted On</th>
-                    <th>Resolved On</th> <!-- NEW -->
                 </tr>
             </thead>
             <tbody id="resolved-concerns-body">
@@ -142,7 +139,10 @@
             </tbody>
         </table>
     </div>
-</div>
+
+                </div> <!-- End of tab-content-container -->
+
+            </div>
         </section>
     </main>
 
