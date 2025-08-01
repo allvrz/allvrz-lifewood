@@ -89,33 +89,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         pendingTableBody.appendChild(row);
                     });
                 }
-            
 
-                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
-acceptedTableBody.innerHTML = '';
-if (acceptedSnapshot.empty) {
-    acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
-} else {
-    acceptedSnapshot.forEach((doc, index) => {
-        const app = doc.data();
-        const row = document.createElement('tr');
-        
-        // This line safely gets the date, or shows 'N/A' if it doesn't exist yet
-        const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
-        
-        // The innerHTML now includes the acceptedOnDate variable in the correct column
-        row.innerHTML = `
-            <td>${app.name}</td>
-            <td>${app.email}</td>
-            <td>${app.project}</td>
-            <td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td>
-            <td>${app.submittedOn.toDate().toLocaleString()}</td>
-            <td>${acceptedOnDate}</td> <!-- THIS IS THE FIX -->
-            <td>${app.availability}</td>
-        `;
-        acceptedTableBody.appendChild(row);
-    });
-}
+                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('submittedOn', 'desc').get();
+                acceptedTableBody.innerHTML = '';
+                if (acceptedSnapshot.empty) {
+                    acceptedTableBody.innerHTML = `<tr><td colspan="6">No accepted applications.</td></tr>`;
+                } else {
+                    acceptedSnapshot.forEach(doc => {
+                        const app = doc.data();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td>`;
+                        acceptedTableBody.appendChild(row);
+                    });
+                }
             }
 
              pendingTableBody.addEventListener('click', async (e) => {
@@ -153,32 +139,18 @@ if (acceptedSnapshot.empty) {
                     });
                 }
 
-                // Inside renderConcernsTables()
-
-const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
-resolvedTableBody.innerHTML = '';
-if (resolvedSnapshot.empty) {
-    resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
-} else {
-    resolvedSnapshot.forEach((doc, index) => {
-        const con = doc.data();
-        
-        // This line safely gets the date, or shows 'N/A'
-        const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
-        
-        const row = document.createElement('tr');
-        // The innerHTML now includes the resolvedOnDate variable in the correct column
-        row.innerHTML = `
-            <td>${con.name}</td>
-            <td>${con.email}</td>
-            <td>${con.interests}</td>
-            <td title="${con.message}">${con.message.substring(0, 50)}...</td>
-            <td>${con.submittedOn.toDate().toLocaleString()}</td>
-            <td>${resolvedOnDate}</td> <!-- THIS IS THE FIX -->
-        `;
-        resolvedTableBody.appendChild(row);
-    });
-}
+                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('submittedOn', 'desc').get();
+                resolvedTableBody.innerHTML = '';
+                if (resolvedSnapshot.empty) {
+                    resolvedTableBody.innerHTML = `<tr><td colspan="5">No resolved concerns.</td></tr>`;
+                } else {
+                    resolvedSnapshot.forEach(doc => {
+                        const con = doc.data();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 50)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td>`;
+                        resolvedTableBody.appendChild(row);
+                    });
+                }
             }
 
             unresolvedTableBody.addEventListener('click', async (e) => {
