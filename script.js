@@ -74,118 +74,72 @@ document.addEventListener('DOMContentLoaded', function() {
             const resolvedTableBody = document.getElementById('resolved-concerns-body');
 
             async function renderApplicationTables() {
-                pendingTableBody.innerHTML = '<tr><td colspan="8">Loading...</td></tr>';
-                acceptedTableBody.innerHTML = '<tr><td colspan="8">Loading...</td></tr>';
+                pendingTableBody.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
+                acceptedTableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
 
                 const pendingSnapshot = await db.collection('applications').where('status', '==', 'pending').orderBy('submittedOn', 'desc').get();
                 pendingTableBody.innerHTML = '';
                 if (pendingSnapshot.empty) {
-                    pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
+                    pendingTableBody.innerHTML = `<tr><td colspan="7">No pending applications.</td></tr>`;
                 } else {
                     pendingSnapshot.forEach(doc => {
                         const app = doc.data();
                         const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td>
-                         <td class="actions-column">
-                                <button class="action-btn accept" data-doc-id="${doc.id}">Accept</button>
-                                <button class="action-btn reject" data-doc-id="${doc.id}">Reject</button> <!-- NEW -->
-                            </td>
-                        `;
+                        row.innerHTML = `<td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td><td><button class="action-btn accept" data-doc-id="${doc.id}">Accept</button></td>`;
                         pendingTableBody.appendChild(row);
                     });
                 }
 
-                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
+                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('submittedOn', 'desc').get();
                 acceptedTableBody.innerHTML = '';
                 if (acceptedSnapshot.empty) {
-                    acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
+                    acceptedTableBody.innerHTML = `<tr><td colspan="6">No accepted applications.</td></tr>`;
                 } else {
-                    acceptedSnapshot.forEach((doc, index) => {
+                    acceptedSnapshot.forEach(doc => {
                         const app = doc.data();
                         const row = document.createElement('tr');
-                        const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
-                        row.innerHTML = `
-                            <td>${app.name}</td>
-                            <td>${app.email}</td>
-                            <td>${app.project}</td>
-                            <td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td>
-                            <td>${app.submittedOn.toDate().toLocaleString()}</td>
-                            <td>${acceptedOnDate}</td> <!-- NEW -->
-                            <td>${app.availability}</td>
-                        `;
+                        row.innerHTML = `<td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td>`;
                         acceptedTableBody.appendChild(row);
                     });
                 }
             }
 
             pendingTableBody.addEventListener('click', async (e) => {
-                const target = e.target;
-                if (target && target.classList.contains('action-btn')) {
-                    const docId = target.dataset.docId;
-                    
-                    if (target.classList.contains('accept')) {
-                        if (confirm('Are you sure you want to accept this application?')) {
-                            target.disabled = true;
-                            await db.collection('applications').doc(docId).update({
-                                status: 'accepted',
-                                acceptedOn: firebase.firestore.FieldValue.serverTimestamp() // NEW
-                            });
-                            renderApplicationTables();
-                        }
-                    } else if (target.classList.contains('reject')) {
-                        if (confirm('Are you sure you want to reject this application? This action cannot be undone.')) {
-                            target.disabled = true;
-                            // We simply update the status. The application will disappear from this view.
-                            await db.collection('applications').doc(docId).update({
-                                status: 'rejected'
-                            });
-                            renderApplicationTables();
-                        }
+                if (e.target && e.target.classList.contains('accept')) {
+                    if (confirm('Are you sure you want to accept this application?')) {
+                        e.target.disabled = true;
+                        await db.collection('applications').doc(e.target.dataset.docId).update({ status: 'accepted' });
+                        renderApplicationTables();
                     }
                 }
             });
 
             async function renderConcernsTables() {
-                unresolvedTableBody.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
-                resolvedTableBody.innerHTML = '<tr><td colspan="7"Loading...</td></tr>';
+                unresolvedTableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+                resolvedTableBody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
                 
                 const unresolvedSnapshot = await db.collection('concerns').where('status', '==', 'unresolved').orderBy('submittedOn', 'desc').get();
                 unresolvedTableBody.innerHTML = '';
                 if (unresolvedSnapshot.empty) {
-                    unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
+                    unresolvedTableBody.innerHTML = `<tr><td colspan="6">No unresolved concerns.</td></tr>`;
                 } else {
-                    unresolvedSnapshot.forEach((doc, index) => {
+                    unresolvedSnapshot.forEach(doc => {
                         const con = doc.data();
                         const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${con.name}</td>
-                            <td>${con.email}</td>
-                            <td>${con.interests}</td>
-                            <td title="${con.message}">${con.message.substring(0, 50)}...</td>
-                            <td>${con.submittedOn.toDate().toLocaleString()}</td>
-                            <td class="actions-column"><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>
-                        `;
+                        row.innerHTML = `<td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 50)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td><td><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>`;
                         unresolvedTableBody.appendChild(row);
                     });
                 }
 
-                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
+                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('submittedOn', 'desc').get();
                 resolvedTableBody.innerHTML = '';
                 if (resolvedSnapshot.empty) {
-                    resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
+                    resolvedTableBody.innerHTML = `<tr><td colspan="5">No resolved concerns.</td></tr>`;
                 } else {
-                    resolvedSnapshot.forEach((doc, index) => {
+                    resolvedSnapshot.forEach(doc => {
                         const con = doc.data();
-                        const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${con.name}</td>
-                            <td>${con.email}</td>
-                            <td>${con.interests}</td>
-                            <td title="${con.message}">${con.message.substring(0, 50)}...</td>
-                            <td>${con.submittedOn.toDate().toLocaleString()}</td>
-                            <td>${resolvedOnDate}</td> <!-- NEW -->
-                        `;
+                        row.innerHTML = `<td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 50)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td>`;
                         resolvedTableBody.appendChild(row);
                     });
                 }
@@ -195,10 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (e.target && e.target.classList.contains('resolve')) {
                     if (confirm('Are you sure you want to mark this concern as resolved?')) {
                         e.target.disabled = true;
-                        await db.collection('concerns').doc(e.target.dataset.docId).update({
-                            status: 'resolved',
-                            resolvedOn: firebase.firestore.FieldValue.serverTimestamp() // NEW
-                        });
+                        await db.collection('concerns').doc(e.target.dataset.docId).update({ status: 'resolved' });
                         renderConcernsTables();
                     }
                 }
