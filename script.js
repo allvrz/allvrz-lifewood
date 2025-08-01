@@ -104,13 +104,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            pendingTableBody.addEventListener('click', async (e) => {
-                if (e.target && e.target.classList.contains('accept')) {
-                    if (confirm('Are you sure you want to accept this application?')) {
-                        e.target.disabled = true;
-                        await db.collection('applications').doc(e.target.dataset.docId).update({ status: 'accepted' });
-                        renderApplicationTables();
-                    }
+             pendingTableBody.addEventListener('click', async (e) => {
+                const target = e.target;
+                if (target && target.classList.contains('action-btn')) {
+                    const docId = target.dataset.docId;
+                    
+                    if (target.classList.contains('accept')) {
+                        if (confirm('Are you sure you want to accept this application?')) {
+                            target.disabled = true;
+                            await db.collection('applications').doc(docId).update({
+                                status: 'accepted',
+                                acceptedOn: firebase.firestore.FieldValue.serverTimestamp() // NEW
+                            });
+                            renderApplicationTables();
+                        }
+                    } 
                 }
             });
 
@@ -149,7 +157,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (e.target && e.target.classList.contains('resolve')) {
                     if (confirm('Are you sure you want to mark this concern as resolved?')) {
                         e.target.disabled = true;
-                        await db.collection('concerns').doc(e.target.dataset.docId).update({ status: 'resolved' });
+                        await db.collection('concerns').doc(e.target.dataset.docId).update({
+                            status: 'resolved',
+                            resolvedOn: firebase.firestore.FieldValue.serverTimestamp() // NEW
+                        });
                         renderConcernsTables();
                     }
                 }
