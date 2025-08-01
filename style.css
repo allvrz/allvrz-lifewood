@@ -3064,3 +3064,21 @@ body.modal-open {
     background-color: #d9534f;
     color: white;
 }
+
+/* style.css */
+
+.action-btn.resolve:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-2px);
+}
+
+/* --- NEW: Style for the Reject button --- */
+.action-btn.reject {
+    background-color: #d9534f; /* A standard red color */
+    color: white;
+}
+
+.action-btn.reject:hover {
+    background-color: #c9302c;
+    transform: translateY(-2px);
+}
