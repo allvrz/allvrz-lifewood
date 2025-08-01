@@ -105,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         const row = document.createElement('tr');
                         const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                         row.innerHTML = `
-                            <td>${index + 1}</td>
                             <td>${app.name}</td>
                             <td>${app.email}</td>
                             <td>${app.project}</td>
@@ -159,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         const con = doc.data();
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${index + 1}</td>
                             <td>${con.name}</td>
                             <td>${con.email}</td>
                             <td>${con.interests}</td>
@@ -181,7 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${index + 1}</td>
                             <td>${con.name}</td>
                             <td>${con.email}</td>
                             <td>${con.interests}</td>
