@@ -2939,7 +2939,7 @@ body.modal-open {
 }
 
 /* On the dashboard, we don't need margin-top for the table containers anymore */
-.tab-content .admin-table-container {
+.tab-content{
     margin-top: 0;
 }
 
@@ -3077,20 +3077,54 @@ body.modal-open {
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-.admin-table thead th {
-    position: sticky; /* Makes the header stick to the top of the container */
-    top: 0;
-    z-index: 10;
-}
-
 /* 2. Table Layout and Cell Styling for Compact View */
-.admin-table {
-    table-layout: fixed; /* Enforces column widths */
+/* style.css */
+
+/* --- FINAL, ROBUST DASHBOARD TABLE STYLES --- */
+
+/* 1. The container that handles all scrolling */
+.admin-table-container {
+    overflow-x: auto; /* Allow horizontal scrolling when needed */
+    margin-top: 0; /* This was already there, but good to confirm */
 }
 
-.admin-table td,
+/* 2. The table itself */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* 3. All table cells (header and data) */
+.admin-table th,
+.admin-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap; /* Keep content on a single line */
+}
+
+/* 4. The header row */
 .admin-table th {
-    white-space: nowrap; /* Prevents text from wrapping */
+    background-color: var(--color-paper);
+    font-weight: 600;
+}
+
+/* 5. Give specific columns a MINIMUM width to prevent squishing */
+/* This tells the browser these columns should be AT LEAST this wide */
+.admin-table th:nth-child(2), /* Name */
+.admin-table td:nth-child(2) {
+    min-width: 150px;
+}
+
+.admin-table th:nth-child(3), /* Email */
+.admin-table td:nth-child(3) {
+    min-width: 200px;
+}
+
+.admin-table th:nth-child(6), /* Submitted On */
+.admin-table td:nth-child(6) {
+    min-width: 180px;
 }
 
 .admin-table td {
