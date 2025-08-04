@@ -1,3 +1,4 @@
+// This is a site-wide canary to prove the script is loading.
 console.log("Script.js has started executing.");
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -31,27 +32,36 @@ function initializeLoginPage() {
         const email = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         const errorDiv = document.getElementById('loginError');
+        const submitButton = loginForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
 
         auth.signInWithEmailAndPassword(email, password)
-            .then(() => { window.location.href = 'admin-dashboard.html'; })
+            .then(() => {
+                window.location.href = 'admin-dashboard.html';
+            })
             .catch((error) => {
                 errorDiv.textContent = "Invalid email or password.";
                 console.error("Login Error:", error);
+                submitButton.disabled = false;
             });
     });
 }
 
 function initializeDashboard() {
+    // This is the gatekeeper. Nothing dashboard-related runs until this confirms a user is logged in.
     auth.onAuthStateChanged(user => {
         if (user) {
+            // User is signed in, now we can run all the dashboard code.
             runDashboardCode();
         } else {
+            // User is signed out.
             alert('Access denied. Please log in.');
             window.location.href = 'admin.html';
         }
     });
 
     function runDashboardCode() {
+        // Get all necessary element references
         const logoutButton = document.getElementById('logout-button');
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
@@ -64,6 +74,7 @@ function initializeDashboard() {
         const modalBody = document.getElementById('modalBody');
         const closeDetailsModalBtn = document.getElementById('closeDetailsModal');
 
+        // --- Logout Button ---
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -74,6 +85,7 @@ function initializeDashboard() {
             });
         }
         
+        // --- Tab Functionality ---
         if (tabButtons.length > 0) {
             tabButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -86,6 +98,7 @@ function initializeDashboard() {
             });
         }
 
+        // --- Details Modal Functionality ---
         if (detailsModal && closeDetailsModalBtn) {
             closeDetailsModalBtn.addEventListener('click', () => detailsModal.classList.remove('is-active'));
             detailsModal.addEventListener('click', (e) => {
@@ -93,6 +106,7 @@ function initializeDashboard() {
             });
         }
 
+        // --- RENDER FUNCTIONS ---
         async function renderApplicationTables() {
             pendingTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
             acceptedTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
@@ -120,14 +134,14 @@ function initializeDashboard() {
                         const app = doc.data();
                         const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
                         acceptedTableBody.appendChild(row);
                     });
                 }
             } catch (error) {
                 console.error("Error rendering application tables:", error);
-                pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console.</td></tr>`;
-                acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console.</td></tr>`;
+                pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for an index link.</td></tr>`;
+                acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for an index link.</td></tr>`;
             }
         }
 
@@ -164,26 +178,65 @@ function initializeDashboard() {
                 }
             } catch (error) {
                 console.error("Error rendering concerns tables:", error);
-                unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console.</td></tr>`;
-                resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console.</td></tr>`;
+                unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for an index link.</td></tr>`;
+                resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for an index link.</td></tr>`;
             }
         }
 
+        // --- ACTION EVENT LISTENERS ---
         pendingTableBody.addEventListener('click', async (e) => {
             const target = e.target;
             if (target && target.classList.contains('action-btn')) {
                 const docId = target.dataset.docId;
-                target.disabled = true;
+                
+                const appDoc = await db.collection('applications').doc(docId).get();
+                if (!appDoc.exists) return;
+                const appData = appDoc.data();
+
+                const templateParams = {
+                    applicant_name: appData.name,
+                    applicant_email: appData.email,
+                    project_name: appData.project
+                };
+
+                let newStatus = '';
+                let confirmMessage = '';
+
                 if (target.classList.contains('accept')) {
-                    if (confirm('Are you sure you want to accept this application?')) {
-                        await db.collection('applications').doc(docId).update({ status: 'accepted', acceptedOn: firebase.firestore.FieldValue.serverTimestamp() });
-                    }
+                    newStatus = 'accepted';
+                    confirmMessage = 'Are you sure you want to accept this application and notify the applicant?';
+                    templateParams.status_message = "We are pleased to inform you that your application has been accepted!";
+                    templateParams.next_steps = "Our team will be in touch with you shortly regarding the next steps.";
                 } else if (target.classList.contains('reject')) {
-                    if (confirm('Are you sure you want to reject this application? This cannot be undone.')) {
-                        await db.collection('applications').doc(docId).update({ status: 'rejected' });
-                    }
+                    newStatus = 'rejected';
+                    confirmMessage = 'Are you sure you want to reject this application and notify the applicant?';
+                    templateParams.status_message = "After careful consideration, we have decided not to move forward with your application at this time.";
+                    templateParams.next_steps = "We wish you the best of luck in your job search and thank you for your interest in Lifewood.";
                 }
-                renderApplicationTables();
+
+                if (newStatus && confirm(confirmMessage)) {
+                    target.disabled = true;
+                    const originalText = target.textContent;
+                    target.textContent = 'Sending...';
+
+                    try {
+                        await emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, templateParams, emailjsConfig.publicKey);
+                        
+                        const updateData = { status: newStatus };
+                        if (newStatus === 'accepted') {
+                            updateData.acceptedOn = firebase.firestore.FieldValue.serverTimestamp();
+                        }
+                        await db.collection('applications').doc(docId).update(updateData);
+                        
+                        alert(`Applicant has been notified of their '${newStatus}' status.`);
+                    } catch (error) {
+                        console.error('Failed to send email or update status:', error);
+                        alert('An error occurred. Please check the console and try again.');
+                        target.disabled = false;
+                        target.textContent = originalText;
+                    }
+                    renderApplicationTables();
+                }
             }
         });
 
@@ -191,7 +244,10 @@ function initializeDashboard() {
             if (e.target && e.target.classList.contains('resolve')) {
                 if (confirm('Are you sure you want to mark this concern as resolved?')) {
                     e.target.disabled = true;
-                    await db.collection('concerns').doc(e.target.dataset.docId).update({ status: 'resolved', resolvedOn: firebase.firestore.FieldValue.serverTimestamp() });
+                    await db.collection('concerns').doc(e.target.dataset.docId).update({
+                        status: 'resolved',
+                        resolvedOn: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                     renderConcernsTables();
                 }
             }
@@ -202,26 +258,28 @@ function initializeDashboard() {
                 const docId = e.target.dataset.docId;
                 const type = e.target.dataset.type;
 
-                if (type === 'concern') {
+                if (type === 'application') {
+                    const doc = await db.collection('applications').doc(docId).get();
+                    const data = doc.data();
+                    modalTitle.textContent = `Application: ${data.name}`;
+                    modalBody.innerHTML = `<p><strong>Project:</strong> ${data.project}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Availability:</strong> ${data.availability}</p><p><strong>Resume:</strong> <a href="${data.resume}" target="_blank" rel="noopener noreferrer">Open Link</a></p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Accepted On:</strong> ${data.acceptedOn ? data.acceptedOn.toDate().toLocaleString() : 'N/A'}</p>`;
+                } else if (type === 'concern') {
                     const doc = await db.collection('concerns').doc(docId).get();
                     const data = doc.data();
                     modalTitle.textContent = `Concern from: ${data.name}`;
-                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p>`;
+                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Resolved On:</strong> ${data.resolvedOn ? data.resolvedOn.toDate().toLocaleString() : 'N/A'}</p>`;
                 }
                 if (detailsModal) detailsModal.classList.add('is-active');
             }
         });
 
+        // Initial render
         renderApplicationTables();
         renderConcernsTables();
     }
 }
 
-    // ===============================================
-    // == SECTION 2: SITE-WIDE FUNCTIONALITY        ==
-    // ===============================================
-    function initializePublicSite() {
-    
+function initializePublicSite() {
     // --- Mobile Navigation Toggle ---
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.main-nav');
@@ -302,149 +360,140 @@ function initializeDashboard() {
     }
     
     // --- All Modals ---
-    // General function to handle modal closing
     const closeModal = (modal) => {
         if (modal) {
             modal.classList.remove('is-active');
             document.body.classList.remove('modal-open');
-            // If it's the YouTube modal, stop the video
             const iframe = modal.querySelector('iframe');
-            if (iframe) {
-                iframe.src = "";
-            }
+            if (iframe) { iframe.src = ""; }
         }
     };
     
-    // Keydown listener for all modals
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             document.querySelectorAll('.project-modal.is-active').forEach(modal => closeModal(modal));
         }
     });
 
-    // YouTube Video Modal
+    // --- YouTube Video Modal ---
     const videoModal = document.getElementById('videoModal');
     if (videoModal) {
         const playBtn = document.getElementById('play-video-btn');
-    if (videoModal) {
-        const playBtn = document.getElementById('play-video-btn');
         const closeBtn = document.getElementById('closeModalBtn');
-        const modalIframe = document.getElementById('youtubeIframe');
-        const videoId = "WocWafisMUI";
-        const youtubeURL = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
-        
-        playBtn.addEventListener('click', () => {
-            videoModal.classList.add('is-active');
-            document.body.classList.add('modal-open');
-            modalIframe.src = youtubeURL;
-        });
-        closeBtn.addEventListener('click', () => closeModal(videoModal));
-        videoModal.addEventListener('click', e => e.target === videoModal && closeModal(videoModal));
-        
-        playBtn.addEventListener('click', () => {
-            videoModal.classList.add('is-active');
-            document.body.classList.add('modal-open');
-            modalIframe.src = youtubeURL;
-        });
-        closeBtn.addEventListener('click', () => closeModal(videoModal));
-        videoModal.addEventListener('click', e => e.target === videoModal && closeModal(videoModal));
+        if(playBtn && closeBtn){
+            const modalIframe = document.getElementById('youtubeIframe');
+            const videoId = "WocWafisMUI";
+            const youtubeURL = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+            
+            playBtn.addEventListener('click', () => {
+                videoModal.classList.add('is-active');
+                document.body.classList.add('modal-open');
+                modalIframe.src = youtubeURL;
+            });
+            closeBtn.addEventListener('click', () => closeModal(videoModal));
+            videoModal.addEventListener('click', e => e.target === videoModal && closeModal(videoModal));
+        }
     }
     
-    // Project Detail Modal
-    // Project Detail Modal
+    // --- Project Detail Modal ---
     const projectModal = document.getElementById('projectModal');
     if (projectModal) {
         const openModalButtons = document.querySelectorAll('.open-project-modal');
         const closeModalButton = document.getElementById('closeProjectModal');
-        const modalContentTarget = document.getElementById('modal-content-target');
-        const modalContentContainer = document.querySelector('.project-modal-content');
-        
-        openModalButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                const projectID = button.dataset.project;
-                const sourceContent = document.getElementById(`project-detail-${projectID}`);
-                if (sourceContent && modalContentTarget) {
-                    modalContentTarget.innerHTML = sourceContent.innerHTML;
-                    projectModal.classList.add('is-active');
-                    document.body.classList.add('modal-open');
-                    if (modalContentContainer) modalContentContainer.scrollTop = 0;
-                }
+        if(openModalButtons.length > 0 && closeModalButton){
+            const modalContentTarget = document.getElementById('modal-content-target');
+            const modalContentContainer = projectModal.querySelector('.project-modal-content');
+            
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const projectID = button.dataset.project;
+                    const sourceContent = document.getElementById(`project-detail-${projectID}`);
+                    if (sourceContent && modalContentTarget) {
+                        modalContentTarget.innerHTML = sourceContent.innerHTML;
+                        projectModal.classList.add('is-active');
+                        document.body.classList.add('modal-open');
+                        if (modalContentContainer) modalContentContainer.scrollTop = 0;
+                    }
+                });
             });
-        });
-        closeModalButton.addEventListener('click', () => closeModal(projectModal));
-        projectModal.addEventListener('click', e => e.target === projectModal && closeModal(projectModal));
+            closeModalButton.addEventListener('click', () => closeModal(projectModal));
+            projectModal.addEventListener('click', e => e.target === projectModal && closeModal(projectModal));
+        }
     }
 
-    // Job Application Modal and Form
+    // --- Job Application Modal and Form ---
     const applicationModal = document.getElementById('applicationModal');
     if (applicationModal) {
         const openBtn = document.getElementById('openApplyModalBtn');
         const closeBtn = document.getElementById('closeApplicationModalBtn');
         const applicationForm = document.getElementById('jobApplicationForm');
-        const dobInput = document.getElementById('dob');
-        const ageInput = document.getElementById('age');
-        const startHourSelect = document.getElementById('startHour');
-        const startMinuteSelect = document.getElementById('startMinute');
-        const startPeriodSelect = document.getElementById('startPeriod');
-        const endHourSelect = document.getElementById('endHour');
-        const endMinuteSelect = document.getElementById('endMinute');
-        const endPeriodSelect = document.getElementById('endPeriod');
-
-        openBtn.addEventListener('click', () => {
-            applicationModal.classList.add('is-active');
-            document.body.classList.add('modal-open');
-        });
-        closeBtn.addEventListener('click', () => closeModal(applicationModal));
-        applicationModal.addEventListener('click', e => e.target === applicationModal && closeModal(applicationModal));
-
-        dobInput.addEventListener('change', () => {
-            if (dobInput.value) {
-                const birthDate = new Date(dobInput.value);
-                const today = new Date();
-                let age = today.getFullYear() - birthDate.getFullYear();
-                const m = today.getMonth() - birthDate.getMonth();
-                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) { age--; }
-                ageInput.value = age;
-            } else { ageInput.value = ''; }
-        });
-
-        const populateHours = (selectEl) => { for (let i = 1; i <= 12; i++) { selectEl.add(new Option(i, i)); } };
-        const populateMinutes = (selectEl) => { for (let i = 0; i < 60; i++) { const min = String(i).padStart(2, '0'); selectEl.add(new Option(min, min)); } };
-        const populateAmPm = (selectEl) => { selectEl.add(new Option('AM', 'AM')); selectEl.add(new Option('PM', 'PM')); };
         
-        populateHours(startHourSelect); populateHours(endHourSelect);
-        populateMinutes(startMinuteSelect); populateMinutes(endMinuteSelect);
-        populateAmPm(startPeriodSelect); populateAmPm(endPeriodSelect);
-        
-        applicationForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const submitButton = applicationForm.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-            const formData = new FormData(applicationForm);
-            const availability = `${formData.get('startHour')}:${formData.get('startMinute')} ${formData.get('startPeriod')} - ${formData.get('endHour')}:${formData.get('endMinute')} ${formData.get('endPeriod')}`;
+        if(openBtn && closeBtn && applicationForm){
+            const dobInput = document.getElementById('dob');
+            const ageInput = document.getElementById('age');
+            const startHourSelect = document.getElementById('startHour');
+            const startMinuteSelect = document.getElementById('startMinute');
+            const startPeriodSelect = document.getElementById('startPeriod');
+            const endHourSelect = document.getElementById('endHour');
+            const endMinuteSelect = document.getElementById('endMinute');
+            const endPeriodSelect = document.getElementById('endPeriod');
 
-            db.collection("applications").add({
-                name: `${formData.get('firstName')} ${formData.get('lastName')}`,
-                email: formData.get('email'),
-                project: formData.get('projectAppliedFor'),
-                resume: formData.get('resumeLink'),
-                submittedOn: firebase.firestore.FieldValue.serverTimestamp(),
-                availability: availability,
-                status: 'pending'
-            }).then(() => {
-                alert('Application submitted successfully!');
-                applicationForm.reset();
-                closeModal(applicationModal);
-            }).catch((error) => {
-                console.error("Error adding application: ", error);
-                alert('There was an error submitting your application. Please try again.');
-            }).finally(() => {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Submit Application';
+            openBtn.addEventListener('click', () => {
+                applicationModal.classList.add('is-active');
+                document.body.classList.add('modal-open');
             });
-        });
+            closeBtn.addEventListener('click', () => closeModal(applicationModal));
+            applicationModal.addEventListener('click', e => e.target === applicationModal && closeModal(applicationModal));
+
+            dobInput.addEventListener('change', () => {
+                if (dobInput.value) {
+                    const birthDate = new Date(dobInput.value);
+                    const today = new Date();
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) { age--; }
+                    ageInput.value = age;
+                } else { ageInput.value = ''; }
+            });
+
+            const populateHours = (selectEl) => { for (let i = 1; i <= 12; i++) { selectEl.add(new Option(i, i)); } };
+            const populateMinutes = (selectEl) => { for (let i = 0; i < 60; i++) { const min = String(i).padStart(2, '0'); selectEl.add(new Option(min, min)); } };
+            const populateAmPm = (selectEl) => { selectEl.add(new Option('AM', 'AM')); selectEl.add(new Option('PM', 'PM')); };
+            
+            populateHours(startHourSelect); populateHours(endHourSelect);
+            populateMinutes(startMinuteSelect); populateMinutes(endMinuteSelect);
+            populateAmPm(startPeriodSelect); populateAmPm(endPeriodSelect);
+            
+            applicationForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const submitButton = applicationForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+                const formData = new FormData(applicationForm);
+                const availability = `${formData.get('startHour')}:${formData.get('startMinute')} ${formData.get('startPeriod')} - ${formData.get('endHour')}:${formData.get('endMinute')} ${formData.get('endPeriod')}`;
+
+                db.collection("applications").add({
+                    name: `${formData.get('firstName')} ${formData.get('lastName')}`,
+                    email: formData.get('email'),
+                    project: formData.get('projectAppliedFor'),
+                    resume: formData.get('resumeLink'),
+                    submittedOn: firebase.firestore.FieldValue.serverTimestamp(),
+                    availability: availability,
+                    status: 'pending'
+                }).then(() => {
+                    alert('Application submitted successfully!');
+                    applicationForm.reset();
+                    closeModal(applicationModal);
+                }).catch((error) => {
+                    console.error("Error adding application: ", error);
+                    alert('There was an error submitting your application. Please try again.');
+                }).finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit Application';
+                });
+            });
+        }
     }
 
     // --- Contact Form ---
@@ -477,4 +526,3 @@ function initializeDashboard() {
         });
     }
 }
-    };
