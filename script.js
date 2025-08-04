@@ -37,6 +37,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         function initializeDashboard() {
+            const detailsModal = document.getElementById('detailsModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const closeDetailsModalBtn = document.getElementById('closeDetailsModal');
+    
+    // --- Event Listeners for Closing Modal ---
+    if (detailsModal) {
+        closeDetailsModalBtn.addEventListener('click', () => detailsModal.classList.remove('is-active'));
+        detailsModal.addEventListener('click', (e) => {
+            if (e.target === detailsModal) {
+                detailsModal.classList.remove('is-active');
+            }
+        });
+    }
             // Logout Button
             const logoutButton = document.getElementById('logout-button');
             if (logoutButton) {
@@ -91,14 +105,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // CORRECTED QUERY: We order by 'acceptedOn' now. This requires an index.
         const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
         acceptedTableBody.innerHTML = '';
-        if (acceptedSnapshot.empty) {
-            acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
-        } else {
+        if (acceptedSnapshot.empty) { /* ... no entries message ... */ } 
+        else {
             acceptedSnapshot.forEach((doc, index) => {
                 const app = doc.data();
-                const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                 const row = document.createElement('tr');
-                row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${app.name}</td>
+                    <td>${app.email}</td>
+                    <td>${app.project}</td>
+                    <td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td> <!-- MODIFIED -->
+                    <td>${app.submittedOn.toDate().toLocaleString()}</td>
+                    <td>${app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A'}</td>
+                    <td>${app.availability}</td>
+                `;
                 acceptedTableBody.appendChild(row);
             });
         }
@@ -126,16 +147,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // CORRECTED QUERY: We order by 'resolvedOn' now. This requires an index.
-        const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
+         const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
         resolvedTableBody.innerHTML = '';
-        if (resolvedSnapshot.empty) {
-            resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
-        } else {
+        if (resolvedSnapshot.empty) { /* ... no entries message ... */ }
+        else {
             resolvedSnapshot.forEach((doc, index) => {
                 const con = doc.data();
-                const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
                 const row = document.createElement('tr');
-                row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 50)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td><td>${resolvedOnDate}</td>`;
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${con.name}</td>
+                    <td>${con.email}</td>
+                    <td>${con.interests}</td>
+                    <td><button class="action-btn view" data-type="concern" data-doc-id="${doc.id}">View Message</button></td> <!-- MODIFIED -->
+                    <td>${con.submittedOn.toDate().toLocaleString()}</td>
+                    <td>${con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A'}</td>
+                `;
                 resolvedTableBody.appendChild(row);
             });
         }
@@ -143,6 +170,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
     unresolvedTableBody.addEventListener('click', async (e) => { /* ... unchanged ... */ });
 
+            // --- NEW: Event Listener for View Details Buttons ---
+    document.querySelector('.tab-content-container').addEventListener('click', async (e) => {
+        if (e.target && e.target.classList.contains('view')) {
+            const docId = e.target.dataset.docId;
+            const type = e.target.dataset.type;
+
+            if (type === 'application') {
+                const doc = await db.collection('applications').doc(docId).get();
+                const data = doc.data();
+                modalTitle.textContent = `Application: ${data.name}`;
+                modalBody.innerHTML = `
+                    <p><strong>Project:</strong> ${data.project}</p>
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Availability:</strong> ${data.availability}</p>
+                    <p><strong>Resume:</strong> <a href="${data.resume}" target="_blank" rel="noopener noreferrer">Open Link</a></p>
+                    <p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p>
+                    <p><strong>Accepted On:</strong> ${data.acceptedOn ? data.acceptedOn.toDate().toLocaleString() : 'N/A'}</p>
+                `;
+            } else if (type === 'concern') {
+                const doc = await db.collection('concerns').doc(docId).get();
+                const data = doc.data();
+                modalTitle.textContent = `Concern from: ${data.name}`;
+                modalBody.innerHTML = `
+                    <p><strong>Interests:</strong> ${data.interests}</p>
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Message:</strong></p>
+                    <p>${data.message}</p>
+                    <p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p>
+                    <p><strong>Resolved On:</strong> ${data.resolvedOn ? data.resolvedOn.toDate().toLocaleString() : 'N/A'}</p>
+                `;
+            }
+            detailsModal.classList.add('is-active');
+        }
+    });
+    
     // Initial render
     renderApplicationTables();
     renderConcernsTables();
