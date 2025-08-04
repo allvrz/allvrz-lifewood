@@ -3122,3 +3122,34 @@ body.modal-open {
     background-color: #c9302c;
     transform: translateY(-2px);
 }
+
+/* --- NEW: Details Modal Styles --- */
+.details-modal-container {
+    padding: 30px 40px;
+}
+
+.details-modal-container h2 {
+    font-size: 1.75rem;
+    color: var(--color-dark-serpent);
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.details-modal-container p {
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+.details-modal-container p strong {
+    color: var(--color-dark-serpent);
+    margin-right: 8px;
+}
+
+/* Style for a new 'View' button in the tables */
+.action-btn.view {
+    background-color: #5bc0de; /* Info blue */
+    color: white;
+}
+.action-btn.view:hover {
+    background-color: #31b0d5;
+}
