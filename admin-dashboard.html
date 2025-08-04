@@ -15,21 +15,17 @@
 <body>
     <header class="main-header">
         <div class="container nav-container">
-            <a href="admin.html" class="logo">
+            <a href="index.html" class="logo">
                 <img src="lifewood-logo.png" alt="Lifewood AI Logo">
             </a>
             <nav class="main-nav">
                 <ul>
                     <li><a href="index.html">Home</a></li>
-                    <li>
-                        <button id="logout-button" class="btn-logout">Log Out</button>
-                    </li>
+                    <li><button id="logout-button" class="btn-logout">Log Out</button></li>
                 </ul>
             </nav>
             <button class="hamburger" aria-label="Open navigation menu">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
         </div>
     </header>
@@ -46,7 +42,6 @@
 
                 <div class="tab-content-container">
                     
-                    <!-- Applications Tab Content -->
                     <div id="applications" class="tab-content active">
                         <div class="admin-table-container">
                             <h2>Pending Job Applications</h2>
@@ -71,6 +66,7 @@
                             <h2>Accepted Job Applications</h2>
                             <table class="admin-table">
                                 <thead>
+                                    <!-- THIS IS THE CORRECTED HEADER -->
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
@@ -87,7 +83,6 @@
                         </div>
                     </div>
 
-                    <!-- Concerns Tab Content -->
                     <div id="concerns" class="tab-content">
                         <div class="admin-table-container">
                             <h2>Unresolved Concerns</h2>
@@ -138,18 +133,15 @@
             </div>
         </div>
     </footer>
-    <!-- NEW: Generic Details Modal -->
+
     <div id="detailsModal" class="project-modal">
         <div class="project-modal-content">
             <button id="closeDetailsModal" class="close-modal-btn" aria-label="Close details">×</button>
             <div class="details-modal-container">
                 <h2 id="modalTitle"></h2>
-                <div id="modalBody">
-                    <!-- JS will populate this content -->
-                </div>
+                <div id="modalBody"></div>
             </div>
         </div>
     </div>
-
 </body>
 </html>
