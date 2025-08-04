@@ -3064,3 +3064,61 @@ body.modal-open {
     background-color: #d9534f;
     color: white;
 }
+
+/* --- FINAL DASHBOARD TABLE STYLES --- */
+
+/* 1. Scrolling Container with Sticky Header support */
+.admin-table-container {
+    overflow: auto; /* Handles both vertical and horizontal scroll */
+    max-height: 350px; /* Adjust this value for table height */
+    position: relative;
+    background-color: var(--color-white); /* Important for sticky header z-index */
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.admin-table thead th {
+    position: sticky; /* Makes the header stick to the top of the container */
+    top: 0;
+    z-index: 10;
+}
+
+/* 2. Table Layout and Cell Styling for Compact View */
+.admin-table {
+    table-layout: fixed; /* Enforces column widths */
+}
+
+.admin-table td,
+.admin-table th {
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+.admin-table td {
+    overflow: hidden;         /* Hides content that overflows */
+    text-overflow: ellipsis;  /* Adds '...' for truncated text */
+}
+
+/* 3. Column-Specific Widths */
+.admin-table th:first-child, /* The '#' column */
+.admin-table td:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+.admin-table th.actions-column, /* The 'Actions' column */
+.admin-table td.actions-column {
+    width: 200px; /* Wider to fit two buttons */
+    text-align: center;
+}
+
+/* 4. Action Button Styling */
+.action-btn.reject {
+    background-color: #d9534f;
+    color: white;
+    margin-left: 8px; /* Space between buttons */
+}
+
+.action-btn.reject:hover {
+    background-color: #c9302c;
+    transform: translateY(-2px);
+}
