@@ -1,9 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // ===============================================
-    // == SECTION 1: PAGE-SPECIFIC LOGIC            ==
-    // ===============================================
-
     // --- Logic for the LOGIN PAGE (admin.html) ---
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
@@ -27,21 +23,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Logic for the ADMIN DASHBOARD PAGE (admin-dashboard.html) ---
     if (window.location.pathname.endsWith('admin-dashboard.html')) {
         
-        // This is the gatekeeper. Nothing dashboard-related runs until this confirms a user is logged in.
         auth.onAuthStateChanged(user => {
             if (user) {
-                // User is signed in, now we can initialize the dashboard.
                 initializeDashboard();
             } else {
-                // User is signed out.
                 alert('Access denied. Please log in.');
                 window.location.href = 'admin.html';
             }
         });
 
-        // This function holds all the code that should ONLY run on the dashboard.
         function initializeDashboard() {
-            // Get all necessary element references at the top
+            // Get all necessary element references
             const logoutButton = document.getElementById('logout-button');
             const tabButtons = document.querySelectorAll('.tab-button');
             const tabContents = document.querySelectorAll('.tab-content');
@@ -114,14 +106,24 @@ document.addEventListener('DOMContentLoaded', function() {
                             const app = doc.data();
                             const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                             const row = document.createElement('tr');
-                            row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                            // THIS IS THE CORRECTED ROW HTML
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td>${app.name}</td>
+                                <td>${app.email}</td>
+                                <td>${app.project}</td>
+                                <td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td>
+                                <td>${app.submittedOn.toDate().toLocaleString()}</td>
+                                <td>${acceptedOnDate}</td>
+                                <td>${app.availability}</td>
+                            `;
                             acceptedTableBody.appendChild(row);
                         });
                     }
                 } catch (error) {
                     console.error("Error rendering application tables:", error);
-                    pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for details.</td></tr>`;
-                    acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for details.</td></tr>`;
+                    pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console.</td></tr>`;
+                    acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console.</td></tr>`;
                 }
             }
 
@@ -158,8 +160,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } catch (error) {
                     console.error("Error rendering concerns tables:", error);
-                    unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for details.</td></tr>`;
-                    resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for details.</td></tr>`;
+                    unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console.</td></tr>`;
+                    resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console.</td></tr>`;
                 }
             }
 
@@ -206,18 +208,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         const doc = await db.collection('concerns').doc(docId).get();
                         const data = doc.data();
                         modalTitle.textContent = `Concern from: ${data.name}`;
-                        modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Resolved On:</strong> ${data.resolvedOn ? data.resolvedOn.toDate().toLocaleString() : 'N/A'}</p>`;
+                        modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Message:</strong></p><p>${data.message}</p>`;
                     }
                     detailsModal.classList.add('is-active');
                 }
             });
 
-            // CORRECTED: Initial render calls are now safely inside the auth check.
+            // Initial render
             renderApplicationTables();
             renderConcernsTables();
         }
     }
-
 
     // ===============================================
     // == SECTION 2: SITE-WIDE FUNCTIONALITY        ==
