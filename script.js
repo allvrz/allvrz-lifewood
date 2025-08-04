@@ -27,15 +27,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Logic for the ADMIN DASHBOARD PAGE (admin-dashboard.html) ---
     if (window.location.pathname.endsWith('admin-dashboard.html')) {
         
+        // This is the gatekeeper. Nothing dashboard-related runs until this confirms a user is logged in.
         auth.onAuthStateChanged(user => {
-            if (!user) {
+            if (user) {
+                // User is signed in, now we can initialize the dashboard.
+                initializeDashboard();
+            } else {
+                // User is signed out.
                 alert('Access denied. Please log in.');
                 window.location.href = 'admin.html';
-            } else {
-                initializeDashboard();
             }
         });
 
+        // This function holds all the code that should ONLY run on the dashboard.
         function initializeDashboard() {
             // Get all necessary element references at the top
             const logoutButton = document.getElementById('logout-button');
@@ -87,31 +91,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 pendingTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
                 acceptedTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
 
-                const pendingSnapshot = await db.collection('applications').where('status', '==', 'pending').orderBy('submittedOn', 'desc').get();
-                pendingTableBody.innerHTML = '';
-                if (pendingSnapshot.empty) {
-                    pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
-                } else {
-                    pendingSnapshot.forEach((doc, index) => {
-                        const app = doc.data();
-                        const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td><td class="actions-column"><button class="action-btn accept" data-doc-id="${doc.id}">Accept</button><button class="action-btn reject" data-doc-id="${doc.id}">Reject</button></td>`;
-                        pendingTableBody.appendChild(row);
-                    });
-                }
+                try {
+                    const pendingSnapshot = await db.collection('applications').where('status', '==', 'pending').orderBy('submittedOn', 'desc').get();
+                    pendingTableBody.innerHTML = '';
+                    if (pendingSnapshot.empty) {
+                        pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
+                    } else {
+                        pendingSnapshot.forEach((doc, index) => {
+                            const app = doc.data();
+                            const row = document.createElement('tr');
+                            row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td><td class="actions-column"><button class="action-btn accept" data-doc-id="${doc.id}">Accept</button><button class="action-btn reject" data-doc-id="${doc.id}">Reject</button></td>`;
+                            pendingTableBody.appendChild(row);
+                        });
+                    }
 
-                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
-                acceptedTableBody.innerHTML = '';
-                if (acceptedSnapshot.empty) {
-                    acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
-                } else {
-                    acceptedSnapshot.forEach((doc, index) => {
-                        const app = doc.data();
-                        const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
-                        const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
-                        acceptedTableBody.appendChild(row);
-                    });
+                    const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
+                    acceptedTableBody.innerHTML = '';
+                    if (acceptedSnapshot.empty) {
+                        acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
+                    } else {
+                        acceptedSnapshot.forEach((doc, index) => {
+                            const app = doc.data();
+                            const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
+                            const row = document.createElement('tr');
+                            row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                            acceptedTableBody.appendChild(row);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error rendering application tables:", error);
+                    pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for details.</td></tr>`;
+                    acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for details.</td></tr>`;
                 }
             }
 
@@ -119,36 +129,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 unresolvedTableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
                 resolvedTableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
                 
-                const unresolvedSnapshot = await db.collection('concerns').where('status', '==', 'unresolved').orderBy('submittedOn', 'desc').get();
-                unresolvedTableBody.innerHTML = '';
-                if (unresolvedSnapshot.empty) {
-                    unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
-                } else {
-                    unresolvedSnapshot.forEach((doc, index) => {
-                        const con = doc.data();
-                        const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 30)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td><td class="actions-column"><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>`;
-                        unresolvedTableBody.appendChild(row);
-                    });
-                }
+                try {
+                    const unresolvedSnapshot = await db.collection('concerns').where('status', '==', 'unresolved').orderBy('submittedOn', 'desc').get();
+                    unresolvedTableBody.innerHTML = '';
+                    if (unresolvedSnapshot.empty) {
+                        unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
+                    } else {
+                        unresolvedSnapshot.forEach((doc, index) => {
+                            const con = doc.data();
+                            const row = document.createElement('tr');
+                            row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 30)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td><td class="actions-column"><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>`;
+                            unresolvedTableBody.appendChild(row);
+                        });
+                    }
 
-                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
-                resolvedTableBody.innerHTML = '';
-                if (resolvedSnapshot.empty) {
-                    resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
-                } else {
-                    resolvedSnapshot.forEach((doc, index) => {
-                        const con = doc.data();
-                        const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
-                        const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td><button class="action-btn view" data-type="concern" data-doc-id="${doc.id}">View Message</button></td><td>${con.submittedOn.toDate().toLocaleString()}</td><td>${resolvedOnDate}</td>`;
-                        resolvedTableBody.appendChild(row);
-                    });
+                    const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
+                    resolvedTableBody.innerHTML = '';
+                    if (resolvedSnapshot.empty) {
+                        resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
+                    } else {
+                        resolvedSnapshot.forEach((doc, index) => {
+                            const con = doc.data();
+                            const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
+                            const row = document.createElement('tr');
+                            row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td><button class="action-btn view" data-type="concern" data-doc-id="${doc.id}">View Message</button></td><td>${con.submittedOn.toDate().toLocaleString()}</td><td>${resolvedOnDate}</td>`;
+                            resolvedTableBody.appendChild(row);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error rendering concerns tables:", error);
+                    unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for details.</td></tr>`;
+                    resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for details.</td></tr>`;
                 }
             }
 
             // --- ACTION EVENT LISTENERS ---
-            // Listener for Pending Applications table
             pendingTableBody.addEventListener('click', async (e) => {
                 const target = e.target;
                 if (target && target.classList.contains('action-btn')) {
@@ -167,18 +182,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Listener for Unresolved Concerns table
             unresolvedTableBody.addEventListener('click', async (e) => {
                 if (e.target && e.target.classList.contains('resolve')) {
                     if (confirm('Are you sure you want to mark this concern as resolved?')) {
                         e.target.disabled = true;
-                        await db.collection('concerns').doc(docId).update({ status: 'resolved', resolvedOn: firebase.firestore.FieldValue.serverTimestamp() });
+                        await db.collection('concerns').doc(e.target.dataset.docId).update({ status: 'resolved', resolvedOn: firebase.firestore.FieldValue.serverTimestamp() });
                         renderConcernsTables();
                     }
                 }
             });
 
-            // Listener for ALL 'View Details' buttons
             document.querySelector('.tab-content-container').addEventListener('click', async (e) => {
                 if (e.target && e.target.classList.contains('view')) {
                     const docId = e.target.dataset.docId;
@@ -199,12 +212,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Initial render
+            // CORRECTED: Initial render calls are now safely inside the auth check.
             renderApplicationTables();
             renderConcernsTables();
         }
     }
-
 
 
     // ===============================================
