@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <td>${app.name}</td>
                                 <td>${app.email}</td>
                                 <td>${app.project}</td>
-                                <td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td>
+                                <td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td>
                                 <td>${app.submittedOn.toDate().toLocaleString()}</td>
                                 <td>${acceptedOnDate}</td>
                                 <td>${app.availability}</td>
