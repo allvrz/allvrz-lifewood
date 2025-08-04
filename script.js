@@ -199,12 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const docId = e.target.dataset.docId;
                     const type = e.target.dataset.type;
 
-                    if (type === 'application') {
-                        const doc = await db.collection('applications').doc(docId).get();
-                        const data = doc.data();
-                        modalTitle.textContent = `Applicant: ${data.name}`;
-                        modalBody.innerHTML = `<p><strong>Project:</strong> ${data.project}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Availability:</strong> ${data.availability}</p><p><strong>Resume:</strong> <a href="${data.resume}" target="_blank" rel="noopener noreferrer">Open Link</a></p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Accepted On:</strong> ${data.acceptedOn ? data.acceptedOn.toDate().toLocaleString() : 'N/A'}</p>`;
-                    } else if (type === 'concern') {
+                    if (type === 'concern') {
                         const doc = await db.collection('concerns').doc(docId).get();
                         const data = doc.data();
                         modalTitle.textContent = `Concern from: ${data.name}`;
