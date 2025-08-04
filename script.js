@@ -1,223 +1,231 @@
+console.log("Script.js has started executing.");
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded and parsed.");
 
-    // --- Logic for the LOGIN PAGE (admin.html) ---
+    // This is the router. It checks which page we are on and runs ONLY the relevant code.
+    const path = window.location.pathname;
+
+    if (path.includes('admin-dashboard.html')) {
+        console.log("Running on: Admin Dashboard Page");
+        initializeDashboard();
+    } else if (path.includes('admin.html')) {
+        console.log("Running on: Login Page");
+        initializeLoginPage();
+    } else {
+        console.log("Running on: Public Page");
+        initializePublicSite();
+    }
+});
+
+// =====================================================================
+// == INITIALIZATION FUNCTIONS (Keeps code clean and isolated)      ==
+// =====================================================================
+
+function initializeLoginPage() {
     const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('loginError');
+    if (!loginForm) return;
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    window.location.href = 'admin-dashboard.html';
-                })
-                .catch((error) => {
-                    errorDiv.textContent = "Invalid email or password.";
-                    console.error("Login Error:", error);
-                });
-        });
-    }
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('loginError');
 
-    // --- Logic for the ADMIN DASHBOARD PAGE (admin-dashboard.html) ---
-    if (window.location.pathname.endsWith('admin-dashboard.html')) {
-        
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                initializeDashboard();
-            } else {
-                alert('Access denied. Please log in.');
-                window.location.href = 'admin.html';
-            }
-        });
-
-        function initializeDashboard() {
-            // Get all necessary element references
-            const logoutButton = document.getElementById('logout-button');
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
-            const pendingTableBody = document.getElementById('pending-applications-body');
-            const acceptedTableBody = document.getElementById('accepted-applications-body');
-            const unresolvedTableBody = document.getElementById('unresolved-concerns-body');
-            const resolvedTableBody = document.getElementById('resolved-concerns-body');
-            const detailsModal = document.getElementById('detailsModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            const closeDetailsModalBtn = document.getElementById('closeDetailsModal');
-
-            // --- Logout Button ---
-            if (logoutButton) {
-                logoutButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    auth.signOut().then(() => {
-                        alert('You have been logged out successfully.');
-                        window.location.href = 'index.html';
-                    });
-                });
-            }
-            
-            // --- Tab Functionality ---
-            if (tabButtons.length > 0) {
-                tabButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        const targetTabId = button.dataset.tab;
-                        tabButtons.forEach(btn => btn.classList.remove('active'));
-                        tabContents.forEach(content => content.classList.remove('active'));
-                        button.classList.add('active');
-                        document.getElementById(targetTabId).classList.add('active');
-                    });
-                });
-            }
-
-            // --- Details Modal Functionality ---
-            if (detailsModal) {
-                closeDetailsModalBtn.addEventListener('click', () => detailsModal.classList.remove('is-active'));
-                detailsModal.addEventListener('click', (e) => {
-                    if (e.target === detailsModal) detailsModal.classList.remove('is-active');
-                });
-            }
-
-            // --- RENDER FUNCTIONS ---
-            async function renderApplicationTables() {
-                pendingTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
-                acceptedTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
-
-                try {
-                    const pendingSnapshot = await db.collection('applications').where('status', '==', 'pending').orderBy('submittedOn', 'desc').get();
-                    pendingTableBody.innerHTML = '';
-                    if (pendingSnapshot.empty) {
-                        pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
-                    } else {
-                        pendingSnapshot.forEach((doc, index) => {
-                            const app = doc.data();
-                            const row = document.createElement('tr');
-                            row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td><td class="actions-column"><button class="action-btn accept" data-doc-id="${doc.id}">Accept</button><button class="action-btn reject" data-doc-id="${doc.id}">Reject</button></td>`;
-                            pendingTableBody.appendChild(row);
-                        });
-                    }
-
-                    const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
-                    acceptedTableBody.innerHTML = '';
-                    if (acceptedSnapshot.empty) {
-                        acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
-                    } else {
-                        acceptedSnapshot.forEach((doc, index) => {
-                            const app = doc.data();
-                            const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
-                            const row = document.createElement('tr');
-                            // THIS IS THE CORRECTED ROW HTML
-                            row.innerHTML = `
-                                <td>${index + 1}</td>
-                                <td>${app.name}</td>
-                                <td>${app.email}</td>
-                                <td>${app.project}</td>
-                                <td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td>
-                                <td>${app.submittedOn.toDate().toLocaleString()}</td>
-                                <td>${acceptedOnDate}</td>
-                                <td>${app.availability}</td>
-                            `;
-                            acceptedTableBody.appendChild(row);
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error rendering application tables:", error);
-                    pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console.</td></tr>`;
-                    acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console.</td></tr>`;
-                }
-            }
-
-            async function renderConcernsTables() {
-                unresolvedTableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
-                resolvedTableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
-                
-                try {
-                    const unresolvedSnapshot = await db.collection('concerns').where('status', '==', 'unresolved').orderBy('submittedOn', 'desc').get();
-                    unresolvedTableBody.innerHTML = '';
-                    if (unresolvedSnapshot.empty) {
-                        unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
-                    } else {
-                        unresolvedSnapshot.forEach((doc, index) => {
-                            const con = doc.data();
-                            const row = document.createElement('tr');
-                            row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 30)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td><td class="actions-column"><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>`;
-                            unresolvedTableBody.appendChild(row);
-                        });
-                    }
-
-                    const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
-                    resolvedTableBody.innerHTML = '';
-                    if (resolvedSnapshot.empty) {
-                        resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
-                    } else {
-                        resolvedSnapshot.forEach((doc, index) => {
-                            const con = doc.data();
-                            const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
-                            const row = document.createElement('tr');
-                            row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td><button class="action-btn view" data-type="concern" data-doc-id="${doc.id}">View Message</button></td><td>${con.submittedOn.toDate().toLocaleString()}</td><td>${resolvedOnDate}</td>`;
-                            resolvedTableBody.appendChild(row);
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error rendering concerns tables:", error);
-                    unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console.</td></tr>`;
-                    resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console.</td></tr>`;
-                }
-            }
-
-            // --- ACTION EVENT LISTENERS ---
-            pendingTableBody.addEventListener('click', async (e) => {
-                const target = e.target;
-                if (target && target.classList.contains('action-btn')) {
-                    const docId = target.dataset.docId;
-                    target.disabled = true;
-                    if (target.classList.contains('accept')) {
-                        if (confirm('Are you sure you want to accept this application?')) {
-                            await db.collection('applications').doc(docId).update({ status: 'accepted', acceptedOn: firebase.firestore.FieldValue.serverTimestamp() });
-                        }
-                    } else if (target.classList.contains('reject')) {
-                        if (confirm('Are you sure you want to reject this application? This cannot be undone.')) {
-                            await db.collection('applications').doc(docId).update({ status: 'rejected' });
-                        }
-                    }
-                    renderApplicationTables();
-                }
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => { window.location.href = 'admin-dashboard.html'; })
+            .catch((error) => {
+                errorDiv.textContent = "Invalid email or password.";
+                console.error("Login Error:", error);
             });
+    });
+}
 
-            unresolvedTableBody.addEventListener('click', async (e) => {
-                if (e.target && e.target.classList.contains('resolve')) {
-                    if (confirm('Are you sure you want to mark this concern as resolved?')) {
-                        e.target.disabled = true;
-                        await db.collection('concerns').doc(e.target.dataset.docId).update({ status: 'resolved', resolvedOn: firebase.firestore.FieldValue.serverTimestamp() });
-                        renderConcernsTables();
-                    }
-                }
-            });
-
-            document.querySelector('.tab-content-container').addEventListener('click', async (e) => {
-                if (e.target && e.target.classList.contains('view')) {
-                    const docId = e.target.dataset.docId;
-                    const type = e.target.dataset.type;
-
-                    if (type === 'concern') {
-                        const doc = await db.collection('concerns').doc(docId).get();
-                        const data = doc.data();
-                        modalTitle.textContent = `Concern from: ${data.name}`;
-                        modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Message:</strong></p><p>${data.message}</p>`;
-                    }
-                    detailsModal.classList.add('is-active');
-                }
-            });
-
-            // Initial render
-            renderApplicationTables();
-            renderConcernsTables();
+function initializeDashboard() {
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            runDashboardCode();
+        } else {
+            alert('Access denied. Please log in.');
+            window.location.href = 'admin.html';
         }
+    });
+
+    function runDashboardCode() {
+        const logoutButton = document.getElementById('logout-button');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const pendingTableBody = document.getElementById('pending-applications-body');
+        const acceptedTableBody = document.getElementById('accepted-applications-body');
+        const unresolvedTableBody = document.getElementById('unresolved-concerns-body');
+        const resolvedTableBody = document.getElementById('resolved-concerns-body');
+        const detailsModal = document.getElementById('detailsModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const closeDetailsModalBtn = document.getElementById('closeDetailsModal');
+
+        if (logoutButton) {
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                auth.signOut().then(() => {
+                    alert('You have been logged out successfully.');
+                    window.location.href = 'index.html';
+                });
+            });
+        }
+        
+        if (tabButtons.length > 0) {
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTabId = button.dataset.tab;
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    button.classList.add('active');
+                    document.getElementById(targetTabId).classList.add('active');
+                });
+            });
+        }
+
+        if (detailsModal && closeDetailsModalBtn) {
+            closeDetailsModalBtn.addEventListener('click', () => detailsModal.classList.remove('is-active'));
+            detailsModal.addEventListener('click', (e) => {
+                if (e.target === detailsModal) detailsModal.classList.remove('is-active');
+            });
+        }
+
+        async function renderApplicationTables() {
+            pendingTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
+            acceptedTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
+
+            try {
+                const pendingSnapshot = await db.collection('applications').where('status', '==', 'pending').orderBy('submittedOn', 'desc').get();
+                pendingTableBody.innerHTML = '';
+                if (pendingSnapshot.empty) {
+                    pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
+                } else {
+                    pendingSnapshot.forEach((doc, index) => {
+                        const app = doc.data();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td><td class="actions-column"><button class="action-btn accept" data-doc-id="${doc.id}">Accept</button><button class="action-btn reject" data-doc-id="${doc.id}">Reject</button></td>`;
+                        pendingTableBody.appendChild(row);
+                    });
+                }
+
+                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
+                acceptedTableBody.innerHTML = '';
+                if (acceptedSnapshot.empty) {
+                    acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
+                } else {
+                    acceptedSnapshot.forEach((doc, index) => {
+                        const app = doc.data();
+                        const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                        acceptedTableBody.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error("Error rendering application tables:", error);
+                pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console.</td></tr>`;
+                acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console.</td></tr>`;
+            }
+        }
+
+        async function renderConcernsTables() {
+            unresolvedTableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
+            resolvedTableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
+            
+            try {
+                const unresolvedSnapshot = await db.collection('concerns').where('status', '==', 'unresolved').orderBy('submittedOn', 'desc').get();
+                unresolvedTableBody.innerHTML = '';
+                if (unresolvedSnapshot.empty) {
+                    unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
+                } else {
+                    unresolvedSnapshot.forEach((doc, index) => {
+                        const con = doc.data();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 30)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td><td class="actions-column"><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>`;
+                        unresolvedTableBody.appendChild(row);
+                    });
+                }
+
+                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
+                resolvedTableBody.innerHTML = '';
+                if (resolvedSnapshot.empty) {
+                    resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
+                } else {
+                    resolvedSnapshot.forEach((doc, index) => {
+                        const con = doc.data();
+                        const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td><button class="action-btn view" data-type="concern" data-doc-id="${doc.id}">View Message</button></td><td>${con.submittedOn.toDate().toLocaleString()}</td><td>${resolvedOnDate}</td>`;
+                        resolvedTableBody.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error("Error rendering concerns tables:", error);
+                unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console.</td></tr>`;
+                resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console.</td></tr>`;
+            }
+        }
+
+        pendingTableBody.addEventListener('click', async (e) => {
+            const target = e.target;
+            if (target && target.classList.contains('action-btn')) {
+                const docId = target.dataset.docId;
+                target.disabled = true;
+                if (target.classList.contains('accept')) {
+                    if (confirm('Are you sure you want to accept this application?')) {
+                        await db.collection('applications').doc(docId).update({ status: 'accepted', acceptedOn: firebase.firestore.FieldValue.serverTimestamp() });
+                    }
+                } else if (target.classList.contains('reject')) {
+                    if (confirm('Are you sure you want to reject this application? This cannot be undone.')) {
+                        await db.collection('applications').doc(docId).update({ status: 'rejected' });
+                    }
+                }
+                renderApplicationTables();
+            }
+        });
+
+        unresolvedTableBody.addEventListener('click', async (e) => {
+            if (e.target && e.target.classList.contains('resolve')) {
+                if (confirm('Are you sure you want to mark this concern as resolved?')) {
+                    e.target.disabled = true;
+                    await db.collection('concerns').doc(e.target.dataset.docId).update({ status: 'resolved', resolvedOn: firebase.firestore.FieldValue.serverTimestamp() });
+                    renderConcernsTables();
+                }
+            }
+        });
+
+        document.querySelector('.tab-content-container').addEventListener('click', async (e) => {
+            if (e.target && e.target.classList.contains('view')) {
+                const docId = e.target.dataset.docId;
+                const type = e.target.dataset.type;
+
+                if (type === 'application') {
+                    const doc = await db.collection('applications').doc(docId).get();
+                    const data = doc.data();
+                    modalTitle.textContent = `Application: ${data.name}`;
+                    modalBody.innerHTML = `<p><strong>Project:</strong> ${data.project}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Availability:</strong> ${data.availability}</p><p><strong>Resume:</strong> <a href="${data.resume}" target="_blank" rel="noopener noreferrer">Open Link</a></p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Accepted On:</strong> ${data.acceptedOn ? data.acceptedOn.toDate().toLocaleString() : 'N/A'}</p>`;
+                } else if (type === 'concern') {
+                    const doc = await db.collection('concerns').doc(docId).get();
+                    const data = doc.data();
+                    modalTitle.textContent = `Concern from: ${data.name}`;
+                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Resolved On:</strong> ${data.resolvedOn ? data.resolvedOn.toDate().toLocaleString() : 'N/A'}</p>`;
+                }
+                if (detailsModal) detailsModal.classList.add('is-active');
+            }
+        });
+
+        renderApplicationTables();
+        renderConcernsTables();
     }
+}
 
     // ===============================================
     // == SECTION 2: SITE-WIDE FUNCTIONALITY        ==
     // ===============================================
+    function initializePublicSite() {
     
     // --- Mobile Navigation Toggle ---
     const hamburger = document.querySelector('.hamburger');
@@ -323,6 +331,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoModal = document.getElementById('videoModal');
     if (videoModal) {
         const playBtn = document.getElementById('play-video-btn');
+    if (videoModal) {
+        const playBtn = document.getElementById('play-video-btn');
         const closeBtn = document.getElementById('closeModalBtn');
         const modalIframe = document.getElementById('youtubeIframe');
         const videoId = "WocWafisMUI";
@@ -335,8 +345,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         closeBtn.addEventListener('click', () => closeModal(videoModal));
         videoModal.addEventListener('click', e => e.target === videoModal && closeModal(videoModal));
+        
+        playBtn.addEventListener('click', () => {
+            videoModal.classList.add('is-active');
+            document.body.classList.add('modal-open');
+            modalIframe.src = youtubeURL;
+        });
+        closeBtn.addEventListener('click', () => closeModal(videoModal));
+        videoModal.addEventListener('click', e => e.target === videoModal && closeModal(videoModal));
     }
     
+    // Project Detail Modal
     // Project Detail Modal
     const projectModal = document.getElementById('projectModal');
     if (projectModal) {
@@ -462,5 +481,5 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-});
+}
+    };
