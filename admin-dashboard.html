@@ -6,10 +6,10 @@
     <title>Admin Dashboard | Lifewood</title>
     <link rel="icon" type="image/png" href="diamond.png">
     <link rel="stylesheet" href="style.css">
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="firebase-init.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-init.js"></script>
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -18,14 +18,14 @@
             <a href="admin.html" class="logo">
                 <img src="lifewood-logo.png" alt="Lifewood AI Logo">
             </a>
-          <nav class="main-nav">
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li>
-            <button id="logout-button" class="btn-logout">Log Out</button>
-        </li>
-    </ul>
-</nav>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li>
+                        <button id="logout-button" class="btn-logout">Log Out</button>
+                    </li>
+                </ul>
+            </nav>
             <button class="hamburger" aria-label="Open navigation menu">
                 <span></span>
                 <span></span>
@@ -39,111 +39,94 @@
             <div class="container">
                 <h1 class="headline-text">Admin Dashboard</h1>
 
-                <!-- =================================== -->
-                <!-- == NEW: TABS NAVIGATION          == -->
-                <!-- =================================== -->
                 <div class="tabs-container">
                     <button class="tab-button active" data-tab="applications">Job Applications</button>
                     <button class="tab-button" data-tab="concerns">Contact Concerns</button>
                 </div>
 
-                <!-- =================================== -->
-                <!-- == NEW: TABS CONTENT PANELS      == -->
-                <!-- =================================== -->
                 <div class="tab-content-container">
                     
                     <!-- Applications Tab Content -->
                     <div id="applications" class="tab-content active">
+                        <div class="admin-table-container">
+                            <h2>Pending Job Applications</h2>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Project</th>
+                                        <th>Resume</th>
+                                        <th>Submitted On</th>
+                                        <th>Availability</th>
+                                        <th class="actions-column">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pending-applications-body"></tbody>
+                            </table>
+                        </div>
 
-    <!-- NEW: Pending Applications Table -->
-    <div class="admin-table-container">
-        <h2>Pending Job Applications</h2>
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Project</th>
-                    <th>Resume</th>
-                    <th>Submitted On</th>
-                    <th>Availability</th>
-                    <th>Actions</th> <!-- New Column -->
-                </tr>
-            </thead>
-            <tbody id="pending-applications-body">
-                <!-- JS will populate this -->
-            </tbody>
-        </table>
-    </div>
-
-    <!-- NEW: Accepted Applications Table -->
-    <div class="admin-table-container">
-        <h2>Accepted Job Applications</h2>
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Project</th>
-                    <th>Resume</th>
-                    <th>Submitted On</th>
-                    <th>Accepted On</th>
-                    <th>Availability</th>
-                </tr>
-            </thead>
-            <tbody id="accepted-applications-body">
-                <!-- JS will populate this -->
-            </tbody>
-        </table>
-    </div>
-
-</div>
+                        <div class="admin-table-container">
+                            <h2>Accepted Job Applications</h2>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Project</th>
+                                        <th>Resume</th>
+                                        <th>Submitted On</th>
+                                        <th>Accepted On</th>
+                                        <th>Availability</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accepted-applications-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
 
                     <!-- Concerns Tab Content -->
                     <div id="concerns" class="tab-content">
+                        <div class="admin-table-container">
+                            <h2>Unresolved Concerns</h2>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Interests</th>
+                                        <th>Message</th>
+                                        <th>Submitted On</th>
+                                        <th class="actions-column">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="unresolved-concerns-body"></tbody>
+                            </table>
+                        </div>
 
-    <!-- NEW: Unresolved Concerns Table -->
-    <div class="admin-table-container">
-        <h2>Unresolved Concerns</h2>
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Interests</th>
-                    <th>Message</th>
-                    <th>Submitted On</th>
-                    <th>Actions</th> <!-- New Column -->
-                </tr>
-            </thead>
-            <tbody id="unresolved-concerns-body">
-               <!-- JS will populate this -->
-            </tbody>
-        </table>
-    </div>
+                        <div class="admin-table-container">
+                            <h2>Resolved Concerns</h2>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Interests</th>
+                                        <th>Message</th>
+                                        <th>Submitted On</th>
+                                        <th>Resolved On</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resolved-concerns-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
 
-    <!-- NEW: Resolved Concerns Table -->
-    <div class="admin-table-container">
-        <h2>Resolved Concerns</h2>
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Interests</th>
-                    <th>Message</th>
-                    <th>Submitted On</th>
-                    <th>Resolved On</th>
-                </tr>
-            </thead>
-            <tbody id="resolved-concerns-body">
-               <!-- JS will populate this -->
-            </tbody>
-        </table>
-    </div>
-
-                </div> <!-- End of tab-content-container -->
-
+                </div>
             </div>
         </section>
     </main>
