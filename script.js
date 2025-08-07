@@ -20,7 +20,87 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // =====================================================================
-// == INITIALIZATION FUNCTIONS (Keeps code clean and isolated)      ==
+// == NEW: REUSABLE CUSTOM MODAL FUNCTIONS                          ==
+// =====================================================================
+
+/**
+ * Displays a custom notification pop-up.
+ * @param {string} message The message to display.
+ * @param {string} type The type of notification ('success' or 'error').
+ */
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.classList.add('notification-popup', type);
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        notification.addEventListener('transitionend', () => notification.remove());
+    }, 4000);
+}
+
+/**
+ * Displays a custom confirmation modal and returns a Promise.
+ * @param {string} message The message to display in the modal.
+ * @returns {Promise<void>} A promise that resolves on confirm, and rejects on cancel.
+ */
+function showConfirmationModal(message) {
+    const modal = document.getElementById('confirmationModal');
+    const messageEl = document.getElementById('confirmMessageText');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    // Fallback to default confirm if modal elements are missing
+    if (!modal || !messageEl || !confirmBtn || !cancelBtn) {
+        return new Promise((resolve, reject) => {
+            if (confirm(message)) {
+                resolve();
+            } else {
+                reject(null); // Reject with null to indicate user cancellation
+            }
+        });
+    }
+
+    return new Promise((resolve, reject) => {
+        messageEl.textContent = message;
+        modal.classList.add('is-active');
+
+        const resolvePromise = () => {
+            modal.classList.remove('is-active');
+            cleanUpListeners();
+            resolve();
+        };
+
+        const rejectPromise = () => {
+            modal.classList.remove('is-active');
+            cleanUpListeners();
+            reject(null); // Reject with null to indicate user cancellation
+        };
+
+        const outsideClickHandler = (e) => {
+            if (e.target === modal) {
+                rejectPromise();
+            }
+        };
+
+        const cleanUpListeners = () => {
+            confirmBtn.removeEventListener('click', resolvePromise);
+            cancelBtn.removeEventListener('click', rejectPromise);
+            modal.removeEventListener('click', outsideClickHandler);
+        };
+
+        confirmBtn.addEventListener('click', resolvePromise);
+        cancelBtn.addEventListener('click', rejectPromise);
+        modal.addEventListener('click', outsideClickHandler);
+    });
+}
+
+
+// =====================================================================
+// == PAGE INITIALIZATION FUNCTIONS                                 ==
 // =====================================================================
 
 function initializeLoginPage() {
@@ -46,13 +126,10 @@ function initializeLoginPage() {
 }
 
 function initializeDashboard() {
-    // This is the gatekeeper. Nothing dashboard-related runs until this confirms a user is logged in.
     auth.onAuthStateChanged(user => {
         if (user) {
-            // User is signed in, now we can run all the dashboard code.
             runDashboardCode();
         } else {
-            // User is signed out.
             alert('Access denied. Please log in.');
             window.location.href = 'admin.html';
         }
@@ -72,18 +149,16 @@ function initializeDashboard() {
         const modalBody = document.getElementById('modalBody');
         const closeDetailsModalBtn = document.getElementById('closeDetailsModal');
 
-        // --- Logout Button ---
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 auth.signOut().then(() => {
                     showNotification('You have been logged out successfully.', 'success');
-                    window.location.href = 'index.html';
+                    setTimeout(() => window.location.href = 'index.html', 1500);
                 });
             });
         }
         
-        // --- Tab Functionality ---
         if (tabButtons.length > 0) {
             tabButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -96,7 +171,6 @@ function initializeDashboard() {
             });
         }
 
-        // --- Details Modal Functionality ---
         if (detailsModal && closeDetailsModalBtn) {
             closeDetailsModalBtn.addEventListener('click', () => detailsModal.classList.remove('is-active'));
             detailsModal.addEventListener('click', (e) => {
@@ -104,7 +178,6 @@ function initializeDashboard() {
             });
         }
 
-        // --- RENDER FUNCTIONS ---
         async function renderApplicationTables() {
             pendingTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
             acceptedTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
@@ -115,7 +188,6 @@ function initializeDashboard() {
                 if (pendingSnapshot.empty) {
                     pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
                 } else {
-                    // THE FIX IS HERE: Use snapshot.docs.forEach to get the index
                     pendingSnapshot.docs.forEach((doc, index) => {
                         const app = doc.data();
                         const row = document.createElement('tr');
@@ -129,12 +201,11 @@ function initializeDashboard() {
                 if (acceptedSnapshot.empty) {
                     acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
                 } else {
-                    // THE FIX IS HERE: Use snapshot.docs.forEach to get the index
                     acceptedSnapshot.docs.forEach((doc, index) => {
                         const app = doc.data();
                         const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
                         acceptedTableBody.appendChild(row);
                     });
                 }
@@ -155,7 +226,6 @@ function initializeDashboard() {
                 if (unresolvedSnapshot.empty) {
                     unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
                 } else {
-                    // THE FIX IS HERE: Use snapshot.docs.forEach to get the index
                     unresolvedSnapshot.docs.forEach((doc, index) => {
                         const con = doc.data();
                         const row = document.createElement('tr');
@@ -169,7 +239,6 @@ function initializeDashboard() {
                 if (resolvedSnapshot.empty) {
                     resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
                 } else {
-                    // THE FIX IS HERE: Use snapshot.docs.forEach to get the index
                     resolvedSnapshot.docs.forEach((doc, index) => {
                         const con = doc.data();
                         const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
@@ -185,7 +254,6 @@ function initializeDashboard() {
             }
         }
 
-        // --- ACTION EVENT LISTENERS ---
         pendingTableBody.addEventListener('click', async (e) => {
             const target = e.target;
             if (target && target.classList.contains('action-btn')) {
@@ -195,43 +263,31 @@ function initializeDashboard() {
                 if (!appDoc.exists) return;
                 const appData = appDoc.data();
 
-                const templateParams = {
-                    applicant_name: appData.name,
-                    applicant_email: appData.email,
-                    project_name: appData.project,
-                    email_title: '',
-                    main_paragraph: '',
-                    next_steps_paragraph: '',
-                    closing_line: ''
-                };
-
-                let newStatus = '';
-                let confirmMessage = '';
+                const templateParams = { applicant_name: appData.name, applicant_email: appData.email, project_name: appData.project, email_title: '', main_paragraph: '', next_steps_paragraph: '', closing_line: '' };
+                let newStatus = '', confirmMessage = '';
 
                 if (target.classList.contains('accept')) {
                     newStatus = 'accepted';
                     confirmMessage = 'Accept and notify applicant?';
-                     templateParams.email_title = "Congratulations!";
-            templateParams.main_paragraph = "It is with great pleasure that we officially welcome you! We are thrilled to confirm that your application to contribute to the following project has been successful.";
-            templateParams.next_steps_paragraph = "Our project coordinator will be in contact with you shortly to discuss the next steps, including your start date and the project onboarding process.";
-            templateParams.closing_line = "We look forward to having you on the project.";
+                    templateParams.email_title = "Congratulations!";
+                    templateParams.main_paragraph = "It is with great pleasure that we officially welcome you! We are thrilled to confirm that your application to contribute to the following project has been successful.";
+                    templateParams.next_steps_paragraph = "Our project coordinator will be in contact with you shortly to discuss the next steps, including your start date and the project onboarding process.";
+                    templateParams.closing_line = "We look forward to having you on the project.";
+                } else if (target.classList.contains('reject')) {
+                    newStatus = 'rejected';
+                    confirmMessage = 'Reject and notify applicant?';
+                    templateParams.email_title = "Thank You for Your Interest";
+                    templateParams.main_paragraph = "Thank you for your interest in Lifewood and for taking the time to apply. After careful consideration, we have decided to move forward with other candidates whose qualifications more closely match the current needs of this project.";
+                    templateParams.next_steps_paragraph = "This was a very competitive process, and we encourage you to apply for other positions in the future.";
+                    templateParams.closing_line = "We wish you the best of luck in your job search.";
+                }
 
-        } else if (target.classList.contains('reject')) {
-            newStatus = 'rejected';
-            confirmMessage = 'Reject and notify applicant?';
-            
-            templateParams.email_title = "Thank You for Your Interest";
-            templateParams.main_paragraph = "Thank you for your interest in Lifewood and for taking the time to apply. After careful consideration, we have decided to move forward with other candidates whose qualifications more closely match the current needs of this project.";
-            templateParams.next_steps_paragraph = "This was a very competitive process, and we encourage you to apply for other positions in the future.";
-            templateParams.closing_line = "We wish you the best of luck in your job search.";
-        }
-
-                if (newStatus && confirm(confirmMessage)) {
-                    target.disabled = true;
-                    const originalText = target.textContent;
-                    target.textContent = 'Sending...';
-
+                if (newStatus) {
                     try {
+                        await showConfirmationModal(confirmMessage);
+                        target.disabled = true;
+                        target.textContent = 'Sending...';
+
                         await emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, templateParams, emailjsConfig.publicKey);
                         
                         const updateData = { status: newStatus };
@@ -242,26 +298,39 @@ function initializeDashboard() {
                         
                         showNotification(`Applicant notified of their '${newStatus}' status.`, 'success');
                     } catch (error) {
-                        console.error('Failed to send email or update status:', error);
-                        showNotification('An error occurred. Check the console.', 'error');
-                        target.disabled = false;
-                        target.textContent = originalText;
+                        if (error) {
+                             console.error('Failed to send email or update status:', error);
+                             showNotification('An error occurred. Check the console.', 'error');
+                        } else {
+                             console.log("Action cancelled by user.");
+                        }
+                    } finally {
+                        renderApplicationTables();
                     }
-                    renderApplicationTables();
                 }
             }
         });
 
         unresolvedTableBody.addEventListener('click', async (e) => {
             if (e.target && e.target.classList.contains('resolve')) {
-                if (confirm('Are you sure you want to mark this concern as resolved?')) {
-                    e.target.disabled = true;
-                    await db.collection('concerns').doc(e.target.dataset.docId).update({
+                const docId = e.target.dataset.docId;
+                try {
+                    await showConfirmationModal('Are you sure you want to mark this concern as resolved?');
+                    target.disabled = true;
+                    await db.collection('concerns').doc(docId).update({
                         status: 'resolved',
                         resolvedOn: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                    renderConcernsTables();
                     showNotification('Concern has been marked as resolved.', 'success');
+                } catch (error) {
+                     if (error) {
+                         console.error('Failed to resolve concern:', error);
+                         showNotification('An error occurred. Check the console.', 'error');
+                     } else {
+                         console.log("Action cancelled by user.");
+                     }
+                } finally {
+                    renderConcernsTables();
                 }
             }
         });
@@ -270,18 +339,21 @@ function initializeDashboard() {
             if (e.target && e.target.classList.contains('view')) {
                 const docId = e.target.dataset.docId;
                 const type = e.target.dataset.type;
-
-            if (type === 'concern') {
+                if (type === 'application') {
+                    const doc = await db.collection('applications').doc(docId).get();
+                    const data = doc.data();
+                    modalTitle.textContent = `Application: ${data.name}`;
+                    modalBody.innerHTML = `<p><strong>Project:</strong> ${data.project}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Availability:</strong> ${data.availability}</p><p><strong>Resume:</strong> <a href="${data.resume}" target="_blank" rel="noopener noreferrer">Open Link</a></p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Accepted On:</strong> ${data.acceptedOn ? data.acceptedOn.toDate().toLocaleString() : 'N/A'}</p>`;
+                } else if (type === 'concern') {
                     const doc = await db.collection('concerns').doc(docId).get();
                     const data = doc.data();
                     modalTitle.textContent = `Concern from: ${data.name}`;
-                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p>`;
+                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Resolved On:</strong> ${data.resolvedOn ? data.resolvedOn.toDate().toLocaleString() : 'N/A'}</p>`;
                 }
                 if (detailsModal) detailsModal.classList.add('is-active');
             }
         });
 
-        // Initial render
         renderApplicationTables();
         renderConcernsTables();
     }
@@ -379,7 +451,7 @@ function initializePublicSite() {
     
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            document.querySelectorAll('.project-modal.is-active').forEach(modal => closeModal(modal));
+            document.querySelectorAll('.project-modal.is-active, .confirmation-modal.is-active').forEach(modal => closeModal(modal));
         }
     });
 
@@ -533,42 +605,4 @@ function initializePublicSite() {
             });
         });
     }
-}
-
-// Add this new function to the BOTTOM of your script.js file
-
-/**
- * Displays a custom notification pop-up.
- * @param {string} message The message to display.
- * @param {string} type The type of notification ('success' or 'error').
- */
-function showNotification(message, type = 'success') {
-    // 1. Create a new div element
-    const notification = document.createElement('div');
-    
-    // 2. Add the necessary CSS classes
-    notification.classList.add('notification-popup', type); // e.g., 'notification-popup success'
-    
-    // 3. Set the message content
-    notification.textContent = message;
-    
-    // 4. Add the notification to the page's body
-    document.body.appendChild(notification);
-    
-    // 5. Animate it into view
-    // We use a tiny timeout to ensure the browser registers the element before trying to transition it.
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 10);
-    
-    // 6. Set a timer to automatically remove the notification
-    setTimeout(() => {
-        // Animate it out of view
-        notification.classList.remove('show');
-        
-        // After the fade-out animation is complete, remove the element from the DOM
-        notification.addEventListener('transitionend', () => {
-            notification.remove();
-        });
-    }, 4000); // The notification will be visible for 4 seconds
 }
