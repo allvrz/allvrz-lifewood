@@ -124,7 +124,7 @@ function initializeDashboard() {
                     });
                 }
 
-                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'Accepted').orderBy('acceptedOn', 'desc').get();
+                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
                 acceptedTableBody.innerHTML = '';
                 if (acceptedSnapshot.empty) {
                     acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
@@ -164,7 +164,7 @@ function initializeDashboard() {
                     });
                 }
 
-                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'Resolved').orderBy('resolvedOn', 'desc').get();
+                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
                 resolvedTableBody.innerHTML = '';
                 if (resolvedSnapshot.empty) {
                     resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
@@ -207,12 +207,12 @@ function initializeDashboard() {
                 let confirmMessage = '';
 
                 if (target.classList.contains('accept')) {
-                    newStatus = 'Accepted';
+                    newStatus = 'accepted';
                     confirmMessage = 'Accept and notify applicant?';
                     templateParams.status_message = "We are pleased to inform you that your application has been accepted!";
                     templateParams.next_steps = "Our team will be in touch with you shortly regarding the next steps.";
                 } else if (target.classList.contains('reject')) {
-                    newStatus = 'Rejected';
+                    newStatus = 'rejected';
                     confirmMessage = 'Reject and notify applicant?';
                     templateParams.status_message = "After careful consideration, we have decided not to move forward with your application at this time.";
                     templateParams.next_steps = "We wish you the best of luck in your job search.";
@@ -227,7 +227,7 @@ function initializeDashboard() {
                         await emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, templateParams, emailjsConfig.publicKey);
                         
                         const updateData = { status: newStatus };
-                        if (newStatus === 'Accepted') {
+                        if (newStatus === 'accepted') {
                             updateData.acceptedOn = firebase.firestore.FieldValue.serverTimestamp();
                         }
                         await db.collection('applications').doc(docId).update(updateData);
@@ -249,7 +249,7 @@ function initializeDashboard() {
                 if (confirm('Are you sure you want to mark this concern as resolved?')) {
                     e.target.disabled = true;
                     await db.collection('concerns').doc(e.target.dataset.docId).update({
-                        status: 'Resolved',
+                        status: 'resolved',
                         resolvedOn: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     renderConcernsTables();
