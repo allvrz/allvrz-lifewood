@@ -125,7 +125,7 @@ function initializeDashboard() {
                     });
                 }
 
-                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
+                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'Accepted').orderBy('acceptedOn', 'desc').get();
                 acceptedTableBody.innerHTML = '';
                 if (acceptedSnapshot.empty) {
                     acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
@@ -134,7 +134,7 @@ function initializeDashboard() {
                         const app = doc.data();
                         const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
                         acceptedTableBody.appendChild(row);
                     });
                 }
@@ -163,7 +163,7 @@ function initializeDashboard() {
                     });
                 }
 
-                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
+                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'Resolved').orderBy('resolvedOn', 'desc').get();
                 resolvedTableBody.innerHTML = '';
                 if (resolvedSnapshot.empty) {
                     resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
@@ -209,7 +209,7 @@ function initializeDashboard() {
 
             // 2. Use an if/else block to populate the variables based on the button clicked
             if (target.classList.contains('accept')) {
-                newStatus = 'accepted';
+                newStatus = 'Accepted';
                 confirmMessage = 'Are you sure you want to ACCEPT and notify this applicant?';
                 
                 // Populate with "Accepted" content
@@ -219,11 +219,11 @@ function initializeDashboard() {
                 templateParams.closing_line = "We look forward to having you on the project.";
 
             } else if (target.classList.contains('reject')) {
-                newStatus = 'rejected';
+                newStatus = 'Rejected';
                 confirmMessage = 'Are you sure you want to REJECT and notify this applicant?';
 
                 // Populate with "Rejected" content
-                templateParams.email_title = "Update on Your Lifewood Application";
+                templateParams.email_title = "Thank You for Your Interest";
                 templateParams.main_paragraph = "Thank you for your interest in Lifewood and for taking the time to apply. After careful consideration, we have decided to move forward with other candidates whose qualifications more closely match the current needs of this project.";
                 templateParams.next_steps_paragraph = "This was a very competitive process, and we encourage you to apply for other positions in the future.";
                 templateParams.closing_line = "We wish you the best of luck in your job search.";
@@ -239,7 +239,7 @@ function initializeDashboard() {
                     await emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, templateParams, emailjsConfig.publicKey);
                     
                     const updateData = { status: newStatus };
-                    if (newStatus === 'accepted') {
+                    if (newStatus === 'Accepted') {
                         updateData.acceptedOn = firebase.firestore.FieldValue.serverTimestamp();
                     }
                     await db.collection('applications').doc(docId).update(updateData);
@@ -262,7 +262,7 @@ function initializeDashboard() {
                 if (confirm('Are you sure you want to mark this concern as resolved?')) {
                     e.target.disabled = true;
                     await db.collection('concerns').doc(e.target.dataset.docId).update({
-                        status: 'resolved',
+                        status: 'Resolved',
                         resolvedOn: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     renderConcernsTables();
@@ -275,16 +275,11 @@ function initializeDashboard() {
                 const docId = e.target.dataset.docId;
                 const type = e.target.dataset.type;
 
-                if (type === 'application') {
-                    const doc = await db.collection('applications').doc(docId).get();
-                    const data = doc.data();
-                    modalTitle.textContent = `Application: ${data.name}`;
-                    modalBody.innerHTML = `<p><strong>Project:</strong> ${data.project}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Availability:</strong> ${data.availability}</p><p><strong>Resume:</strong> <a href="${data.resume}" target="_blank" rel="noopener noreferrer">Open Link</a></p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Accepted On:</strong> ${data.acceptedOn ? data.acceptedOn.toDate().toLocaleString() : 'N/A'}</p>`;
-                } else if (type === 'concern') {
+               if (type === 'concern') {
                     const doc = await db.collection('concerns').doc(docId).get();
                     const data = doc.data();
                     modalTitle.textContent = `Concern from: ${data.name}`;
-                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Resolved On:</strong> ${data.resolvedOn ? data.resolvedOn.toDate().toLocaleString() : 'N/A'}</p>`;
+                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p>`;
                 }
                 if (detailsModal) detailsModal.classList.add('is-active');
             }
