@@ -148,6 +148,12 @@ function initializeDashboard() {
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
         const closeDetailsModalBtn = document.getElementById('closeDetailsModal');
+        
+        // NEW: Get references to the count badges
+        const pendingCountEl = document.getElementById('pending-count');
+        const acceptedCountEl = document.getElementById('accepted-count');
+        const unresolvedCountEl = document.getElementById('unresolved-count');
+        const resolvedCountEl = document.getElementById('resolved-count');
 
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
@@ -184,6 +190,7 @@ function initializeDashboard() {
 
             try {
                 const pendingSnapshot = await db.collection('applications').where('status', '==', 'pending').orderBy('submittedOn', 'desc').get();
+                if (pendingCountEl) pendingCountEl.textContent = pendingSnapshot.size; // NEW: Update count
                 pendingTableBody.innerHTML = '';
                 if (pendingSnapshot.empty) {
                     pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
@@ -197,6 +204,7 @@ function initializeDashboard() {
                 }
 
                 const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
+                if (acceptedCountEl) acceptedCountEl.textContent = acceptedSnapshot.size; // NEW: Update count
                 acceptedTableBody.innerHTML = '';
                 if (acceptedSnapshot.empty) {
                     acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
@@ -222,6 +230,7 @@ function initializeDashboard() {
             
             try {
                 const unresolvedSnapshot = await db.collection('concerns').where('status', '==', 'unresolved').orderBy('submittedOn', 'desc').get();
+                if (unresolvedCountEl) unresolvedCountEl.textContent = unresolvedSnapshot.size; // NEW: Update count
                 unresolvedTableBody.innerHTML = '';
                 if (unresolvedSnapshot.empty) {
                     unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
@@ -235,6 +244,7 @@ function initializeDashboard() {
                 }
 
                 const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
+                if (resolvedCountEl) resolvedCountEl.textContent = resolvedSnapshot.size; // NEW: Update count
                 resolvedTableBody.innerHTML = '';
                 if (resolvedSnapshot.empty) {
                     resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
@@ -258,7 +268,6 @@ function initializeDashboard() {
             const target = e.target;
             if (target && target.classList.contains('action-btn')) {
                 const docId = target.dataset.docId;
-                
                 const appDoc = await db.collection('applications').doc(docId).get();
                 if (!appDoc.exists) return;
                 const appData = appDoc.data();
@@ -312,12 +321,11 @@ function initializeDashboard() {
         });
 
         unresolvedTableBody.addEventListener('click', async (e) => {
-            const target = e.target;
             if (e.target && e.target.classList.contains('resolve')) {
                 const docId = e.target.dataset.docId;
                 try {
                     await showConfirmationModal('Are you sure you want to mark this concern as resolved?');
-                    target.disabled = true;
+                    e.target.disabled = true;
                     await db.collection('concerns').doc(docId).update({
                         status: 'resolved',
                         resolvedOn: firebase.firestore.FieldValue.serverTimestamp()
@@ -340,6 +348,7 @@ function initializeDashboard() {
             if (e.target && e.target.classList.contains('view')) {
                 const docId = e.target.dataset.docId;
                 const type = e.target.dataset.type;
+
             if (type === 'concern') {
                     const doc = await db.collection('concerns').doc(docId).get();
                     const data = doc.data();
