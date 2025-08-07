@@ -110,7 +110,7 @@ function initializeDashboard() {
             acceptedTableBody.innerHTML = `<tr><td colspan="8">Loading...</td></tr>`;
 
             try {
-                const pendingSnapshot = await db.collection('applications').where('status', '==', 'pending').orderBy('submittedOn', 'desc').get();
+                const pendingSnapshot = await db.collection('applications').where('status', '==', 'pending').orderBy('submittedOn', 'asc').get();
                 pendingTableBody.innerHTML = '';
                 if (pendingSnapshot.empty) {
                     pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
@@ -124,7 +124,7 @@ function initializeDashboard() {
                     });
                 }
 
-                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'desc').get();
+                const acceptedSnapshot = await db.collection('applications').where('status', '==', 'accepted').orderBy('acceptedOn', 'asc').get();
                 acceptedTableBody.innerHTML = '';
                 if (acceptedSnapshot.empty) {
                     acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
@@ -150,7 +150,7 @@ function initializeDashboard() {
             resolvedTableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
             
             try {
-                const unresolvedSnapshot = await db.collection('concerns').where('status', '==', 'unresolved').orderBy('submittedOn', 'desc').get();
+                const unresolvedSnapshot = await db.collection('concerns').where('status', '==', 'unresolved').orderBy('submittedOn', 'asc').get();
                 unresolvedTableBody.innerHTML = '';
                 if (unresolvedSnapshot.empty) {
                     unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
@@ -164,7 +164,7 @@ function initializeDashboard() {
                     });
                 }
 
-                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'desc').get();
+                const resolvedSnapshot = await db.collection('concerns').where('status', '==', 'resolved').orderBy('resolvedOn', 'asc').get();
                 resolvedTableBody.innerHTML = '';
                 if (resolvedSnapshot.empty) {
                     resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
