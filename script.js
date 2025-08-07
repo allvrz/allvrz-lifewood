@@ -36,9 +36,7 @@ function initializeLoginPage() {
         submitButton.disabled = true;
 
         auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                window.location.href = 'admin-dashboard.html';
-            })
+            .then(() => { window.location.href = 'admin-dashboard.html'; })
             .catch((error) => {
                 errorDiv.textContent = "Invalid email or password.";
                 console.error("Login Error:", error);
@@ -117,7 +115,8 @@ function initializeDashboard() {
                 if (pendingSnapshot.empty) {
                     pendingTableBody.innerHTML = `<tr><td colspan="8">No pending applications.</td></tr>`;
                 } else {
-                    pendingSnapshot.forEach((doc, index) => {
+                    // THE FIX IS HERE: Use snapshot.docs.forEach to get the index
+                    pendingSnapshot.docs.forEach((doc, index) => {
                         const app = doc.data();
                         const row = document.createElement('tr');
                         row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${app.availability}</td><td class="actions-column"><button class="action-btn accept" data-doc-id="${doc.id}">Accept</button><button class="action-btn reject" data-doc-id="${doc.id}">Reject</button></td>`;
@@ -130,7 +129,8 @@ function initializeDashboard() {
                 if (acceptedSnapshot.empty) {
                     acceptedTableBody.innerHTML = `<tr><td colspan="8">No accepted applications.</td></tr>`;
                 } else {
-                    acceptedSnapshot.forEach((doc, index) => {
+                    // THE FIX IS HERE: Use snapshot.docs.forEach to get the index
+                    acceptedSnapshot.docs.forEach((doc, index) => {
                         const app = doc.data();
                         const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
@@ -155,7 +155,8 @@ function initializeDashboard() {
                 if (unresolvedSnapshot.empty) {
                     unresolvedTableBody.innerHTML = `<tr><td colspan="7">No unresolved concerns.</td></tr>`;
                 } else {
-                    unresolvedSnapshot.forEach((doc, index) => {
+                    // THE FIX IS HERE: Use snapshot.docs.forEach to get the index
+                    unresolvedSnapshot.docs.forEach((doc, index) => {
                         const con = doc.data();
                         const row = document.createElement('tr');
                         row.innerHTML = `<td>${index + 1}</td><td>${con.name}</td><td>${con.email}</td><td>${con.interests}</td><td title="${con.message}">${con.message.substring(0, 30)}...</td><td>${con.submittedOn.toDate().toLocaleString()}</td><td class="actions-column"><button class="action-btn resolve" data-doc-id="${doc.id}">Resolve</button></td>`;
@@ -168,7 +169,8 @@ function initializeDashboard() {
                 if (resolvedSnapshot.empty) {
                     resolvedTableBody.innerHTML = `<tr><td colspan="7">No resolved concerns.</td></tr>`;
                 } else {
-                    resolvedSnapshot.forEach((doc, index) => {
+                    // THE FIX IS HERE: Use snapshot.docs.forEach to get the index
+                    resolvedSnapshot.docs.forEach((doc, index) => {
                         const con = doc.data();
                         const resolvedOnDate = con.resolvedOn ? con.resolvedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
@@ -185,77 +187,62 @@ function initializeDashboard() {
 
         // --- ACTION EVENT LISTENERS ---
         pendingTableBody.addEventListener('click', async (e) => {
-        const target = e.target;
-        if (target && target.classList.contains('action-btn')) {
-            const docId = target.dataset.docId;
-            
-            const appDoc = await db.collection('applications').doc(docId).get();
-            if (!appDoc.exists) return;
-            const appData = appDoc.data();
-
-            // 1. Define the templateParams object with all our new variables
-            const templateParams = {
-                applicant_name: appData.name,
-                applicant_email: appData.email,
-                project_name: appData.project,
-                email_title: '',
-                main_paragraph: '',
-                next_steps_paragraph: '',
-                closing_line: ''
-            };
-
-            let newStatus = '';
-            let confirmMessage = '';
-
-            // 2. Use an if/else block to populate the variables based on the button clicked
-            if (target.classList.contains('accept')) {
-                newStatus = 'Accepted';
-                confirmMessage = 'Are you sure you want to ACCEPT and notify this applicant?';
+            const target = e.target;
+            if (target && target.classList.contains('action-btn')) {
+                const docId = target.dataset.docId;
                 
-                // Populate with "Accepted" content
-                templateParams.email_title = "Congratulations!";
-                templateParams.main_paragraph = "It is with great pleasure that we officially welcome you! We are thrilled to confirm that your application to contribute to the following project has been successful.";
-                templateParams.next_steps_paragraph = "Our project coordinator will be in contact with you shortly to discuss the next steps, including your start date and the project onboarding process.";
-                templateParams.closing_line = "We look forward to having you on the project.";
+                const appDoc = await db.collection('applications').doc(docId).get();
+                if (!appDoc.exists) return;
+                const appData = appDoc.data();
 
-            } else if (target.classList.contains('reject')) {
-                newStatus = 'Rejected';
-                confirmMessage = 'Are you sure you want to REJECT and notify this applicant?';
+                const templateParams = {
+                    applicant_name: appData.name,
+                    applicant_email: appData.email,
+                    project_name: appData.project,
+                    status_message: '',
+                    next_steps: ''
+                };
 
-                // Populate with "Rejected" content
-                templateParams.email_title = "Thank You for Your Interest";
-                templateParams.main_paragraph = "Thank you for your interest in Lifewood and for taking the time to apply. After careful consideration, we have decided to move forward with other candidates whose qualifications more closely match the current needs of this project.";
-                templateParams.next_steps_paragraph = "This was a very competitive process, and we encourage you to apply for other positions in the future.";
-                templateParams.closing_line = "We wish you the best of luck in your job search.";
-            }
+                let newStatus = '';
+                let confirmMessage = '';
 
-            if (newStatus && confirm(confirmMessage)) {
-                target.disabled = true;
-                const originalText = target.textContent;
-                target.textContent = 'Sending...';
-
-                try {
-                    // 3. Send the fully populated email
-                    await emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, templateParams, emailjsConfig.publicKey);
-                    
-                    const updateData = { status: newStatus };
-                    if (newStatus === 'Accepted') {
-                        updateData.acceptedOn = firebase.firestore.FieldValue.serverTimestamp();
-                    }
-                    await db.collection('applications').doc(docId).update(updateData);
-                    
-                    alert(`Applicant has been notified of their '${newStatus}' status.`);
-                } catch (error) {
-                    console.error('Failed to send email or update status:', error);
-                    alert('An error occurred. Please check the console and try again.');
-                    target.disabled = false;
-                    target.textContent = originalText;
+                if (target.classList.contains('accept')) {
+                    newStatus = 'Accepted';
+                    confirmMessage = 'Accept and notify applicant?';
+                    templateParams.status_message = "We are pleased to inform you that your application has been accepted!";
+                    templateParams.next_steps = "Our team will be in touch with you shortly regarding the next steps.";
+                } else if (target.classList.contains('reject')) {
+                    newStatus = 'Rejected';
+                    confirmMessage = 'Reject and notify applicant?';
+                    templateParams.status_message = "After careful consideration, we have decided not to move forward with your application at this time.";
+                    templateParams.next_steps = "We wish you the best of luck in your job search.";
                 }
-                
-                renderApplicationTables();
+
+                if (newStatus && confirm(confirmMessage)) {
+                    target.disabled = true;
+                    const originalText = target.textContent;
+                    target.textContent = 'Sending...';
+
+                    try {
+                        await emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, templateParams, emailjsConfig.publicKey);
+                        
+                        const updateData = { status: newStatus };
+                        if (newStatus === 'Accepted') {
+                            updateData.acceptedOn = firebase.firestore.FieldValue.serverTimestamp();
+                        }
+                        await db.collection('applications').doc(docId).update(updateData);
+                        
+                        alert(`Applicant notified of their '${newStatus}' status.`);
+                    } catch (error) {
+                        console.error('Failed to send email or update status:', error);
+                        alert('An error occurred. Check the console.');
+                        target.disabled = false;
+                        target.textContent = originalText;
+                    }
+                    renderApplicationTables();
+                }
             }
-        }
-    });
+        });
 
         unresolvedTableBody.addEventListener('click', async (e) => {
             if (e.target && e.target.classList.contains('resolve')) {
@@ -275,7 +262,7 @@ function initializeDashboard() {
                 const docId = e.target.dataset.docId;
                 const type = e.target.dataset.type;
 
-               if (type === 'concern') {
+            if (type === 'concern') {
                     const doc = await db.collection('concerns').doc(docId).get();
                     const data = doc.data();
                     modalTitle.textContent = `Concern from: ${data.name}`;
