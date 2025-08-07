@@ -130,7 +130,6 @@ function initializeDashboard() {
         if (user) {
             runDashboardCode();
         } else {
-            alert('Access denied. Please log in.');
             window.location.href = 'admin.html';
         }
     });
