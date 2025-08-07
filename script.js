@@ -77,7 +77,7 @@ function initializeDashboard() {
             logoutButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 auth.signOut().then(() => {
-                    alert('You have been logged out successfully.');
+                    showNotification('You have been logged out successfully.', 'success');
                     window.location.href = 'index.html';
                 });
             });
@@ -240,10 +240,10 @@ function initializeDashboard() {
                         }
                         await db.collection('applications').doc(docId).update(updateData);
                         
-                        alert(`Applicant notified of their '${newStatus}' status.`);
+                        showNotification(`Applicant notified of their '${newStatus}' status.`, 'success');
                     } catch (error) {
                         console.error('Failed to send email or update status:', error);
-                        alert('An error occurred. Check the console.');
+                        showNotification('An error occurred. Check the console.', 'error');
                         target.disabled = false;
                         target.textContent = originalText;
                     }
@@ -261,6 +261,7 @@ function initializeDashboard() {
                         resolvedOn: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     renderConcernsTables();
+                    showNotification('Concern has been marked as resolved.', 'success');
                 }
             }
         });
@@ -489,12 +490,12 @@ function initializePublicSite() {
                     availability: availability,
                     status: 'pending'
                 }).then(() => {
-                    alert('Application submitted successfully!');
+                    showNotification('Application submitted successfully!', 'success');
                     applicationForm.reset();
                     closeModal(applicationModal);
                 }).catch((error) => {
                     console.error("Error adding application: ", error);
-                    alert('There was an error submitting your application. Please try again.');
+                    showNotification('There was an error submitting your application. Please try again.', 'error');
                 }).finally(() => {
                     submitButton.disabled = false;
                     submitButton.textContent = 'Submit Application';
@@ -521,15 +522,53 @@ function initializePublicSite() {
                 submittedOn: firebase.firestore.FieldValue.serverTimestamp(),
                 status: 'unresolved'
             }).then(() => {
-                alert('Thank you for your message! We will get back to you shortly.');
+                showNotification('Thank you! Your message has been sent.', 'success');
                 contactForm.reset();
             }).catch((error) => {
                 console.error("Error adding concern: ", error);
-                alert('There was an error submitting your message. Please try again.');
+                showNotification('There was an error sending your message. Please try again.', 'error');
             }).finally(() => {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Send Message';
             });
         });
     }
+}
+
+// Add this new function to the BOTTOM of your script.js file
+
+/**
+ * Displays a custom notification pop-up.
+ * @param {string} message The message to display.
+ * @param {string} type The type of notification ('success' or 'error').
+ */
+function showNotification(message, type = 'success') {
+    // 1. Create a new div element
+    const notification = document.createElement('div');
+    
+    // 2. Add the necessary CSS classes
+    notification.classList.add('notification-popup', type); // e.g., 'notification-popup success'
+    
+    // 3. Set the message content
+    notification.textContent = message;
+    
+    // 4. Add the notification to the page's body
+    document.body.appendChild(notification);
+    
+    // 5. Animate it into view
+    // We use a tiny timeout to ensure the browser registers the element before trying to transition it.
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    // 6. Set a timer to automatically remove the notification
+    setTimeout(() => {
+        // Animate it out of view
+        notification.classList.remove('show');
+        
+        // After the fade-out animation is complete, remove the element from the DOM
+        notification.addEventListener('transitionend', () => {
+            notification.remove();
+        });
+    }, 4000); // The notification will be visible for 4 seconds
 }
