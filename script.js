@@ -353,7 +353,7 @@ function initializeDashboard() {
                     const doc = await db.collection('concerns').doc(docId).get();
                     const data = doc.data();
                     modalTitle.textContent = `Concern from: ${data.name}`;
-                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Message:</strong></p><p>${data.message}</p>`;
+                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p>`;
                 }
                 if (detailsModal) detailsModal.classList.add('is-active');
             }
