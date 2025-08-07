@@ -134,14 +134,14 @@ function initializeDashboard() {
                         const app = doc.data();
                         const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><button class="action-btn view" data-type="application" data-doc-id="${doc.id}">View Details</button></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
                         acceptedTableBody.appendChild(row);
                     });
                 }
             } catch (error) {
                 console.error("Error rendering application tables:", error);
-                pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for an index link.</td></tr>`;
-                acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for an index link.</td></tr>`;
+                pendingTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for index link.</td></tr>`;
+                acceptedTableBody.innerHTML = `<tr><td colspan="8">Error loading data. Check console for index link.</td></tr>`;
             }
         }
 
@@ -178,8 +178,8 @@ function initializeDashboard() {
                 }
             } catch (error) {
                 console.error("Error rendering concerns tables:", error);
-                unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for an index link.</td></tr>`;
-                resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for an index link.</td></tr>`;
+                unresolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for index link.</td></tr>`;
+                resolvedTableBody.innerHTML = `<tr><td colspan="7">Error loading data. Check console for index link.</td></tr>`;
             }
         }
 
@@ -196,7 +196,9 @@ function initializeDashboard() {
                 const templateParams = {
                     applicant_name: appData.name,
                     applicant_email: appData.email,
-                    project_name: appData.project
+                    project_name: appData.project,
+                    status_message: '',
+                    next_steps: ''
                 };
 
                 let newStatus = '';
@@ -204,14 +206,14 @@ function initializeDashboard() {
 
                 if (target.classList.contains('accept')) {
                     newStatus = 'accepted';
-                    confirmMessage = 'Are you sure you want to accept this application and notify the applicant?';
+                    confirmMessage = 'Accept and notify applicant?';
                     templateParams.status_message = "We are pleased to inform you that your application has been accepted!";
                     templateParams.next_steps = "Our team will be in touch with you shortly regarding the next steps.";
                 } else if (target.classList.contains('reject')) {
                     newStatus = 'rejected';
-                    confirmMessage = 'Are you sure you want to reject this application and notify the applicant?';
+                    confirmMessage = 'Reject and notify applicant?';
                     templateParams.status_message = "After careful consideration, we have decided not to move forward with your application at this time.";
-                    templateParams.next_steps = "We wish you the best of luck in your job search and thank you for your interest in Lifewood.";
+                    templateParams.next_steps = "We wish you the best of luck in your job search.";
                 }
 
                 if (newStatus && confirm(confirmMessage)) {
@@ -228,10 +230,10 @@ function initializeDashboard() {
                         }
                         await db.collection('applications').doc(docId).update(updateData);
                         
-                        alert(`Applicant has been notified of their '${newStatus}' status.`);
+                        alert(`Applicant notified of their '${newStatus}' status.`);
                     } catch (error) {
                         console.error('Failed to send email or update status:', error);
-                        alert('An error occurred. Please check the console and try again.');
+                        alert('An error occurred. Check the console.');
                         target.disabled = false;
                         target.textContent = originalText;
                     }
@@ -258,11 +260,16 @@ function initializeDashboard() {
                 const docId = e.target.dataset.docId;
                 const type = e.target.dataset.type;
 
-                if (type === 'concern') {
+                if (type === 'application') {
+                    const doc = await db.collection('applications').doc(docId).get();
+                    const data = doc.data();
+                    modalTitle.textContent = `Application: ${data.name}`;
+                    modalBody.innerHTML = `<p><strong>Project:</strong> ${data.project}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Availability:</strong> ${data.availability}</p><p><strong>Resume:</strong> <a href="${data.resume}" target="_blank" rel="noopener noreferrer">Open Link</a></p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Accepted On:</strong> ${data.acceptedOn ? data.acceptedOn.toDate().toLocaleString() : 'N/A'}</p>`;
+                } else if (type === 'concern') {
                     const doc = await db.collection('concerns').doc(docId).get();
                     const data = doc.data();
                     modalTitle.textContent = `Concern from: ${data.name}`;
-                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p>`;
+                    modalBody.innerHTML = `<p><strong>Interests:</strong> ${data.interests}</p><p><strong>Email:</strong> ${data.email}</p><p><strong>Message:</strong></p><p>${data.message}</p><p><strong>Submitted On:</strong> ${data.submittedOn.toDate().toLocaleString()}</p><p><strong>Resolved On:</strong> ${data.resolvedOn ? data.resolvedOn.toDate().toLocaleString() : 'N/A'}</p>`;
                 }
                 if (detailsModal) detailsModal.classList.add('is-active');
             }
@@ -374,7 +381,7 @@ function initializePublicSite() {
     const videoModal = document.getElementById('videoModal');
     if (videoModal) {
         const playBtn = document.getElementById('play-video-btn');
-        const closeBtn = document.getElementById('closeModalBtn');
+        const closeBtn = videoModal.querySelector('.close-modal-btn');
         if(playBtn && closeBtn){
             const modalIframe = document.getElementById('youtubeIframe');
             const videoId = "WocWafisMUI";
@@ -383,7 +390,7 @@ function initializePublicSite() {
             playBtn.addEventListener('click', () => {
                 videoModal.classList.add('is-active');
                 document.body.classList.add('modal-open');
-                modalIframe.src = youtubeURL;
+                if(modalIframe) modalIframe.src = youtubeURL;
             });
             closeBtn.addEventListener('click', () => closeModal(videoModal));
             videoModal.addEventListener('click', e => e.target === videoModal && closeModal(videoModal));
