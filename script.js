@@ -199,8 +199,10 @@ function initializeDashboard() {
                     applicant_name: appData.name,
                     applicant_email: appData.email,
                     project_name: appData.project,
-                    status_message: '',
-                    next_steps: ''
+                    email_title: '',
+                    main_paragraph: '',
+                    next_steps_paragraph: '',
+                    closing_line: ''
                 };
 
                 let newStatus = '';
@@ -209,14 +211,20 @@ function initializeDashboard() {
                 if (target.classList.contains('accept')) {
                     newStatus = 'accepted';
                     confirmMessage = 'Accept and notify applicant?';
-                    templateParams.status_message = "We are pleased to inform you that your application has been accepted!";
-                    templateParams.next_steps = "Our team will be in touch with you shortly regarding the next steps.";
-                } else if (target.classList.contains('reject')) {
-                    newStatus = 'rejected';
-                    confirmMessage = 'Reject and notify applicant?';
-                    templateParams.status_message = "After careful consideration, we have decided not to move forward with your application at this time.";
-                    templateParams.next_steps = "We wish you the best of luck in your job search.";
-                }
+                     templateParams.email_title = "Congratulations!";
+            templateParams.main_paragraph = "It is with great pleasure that we officially welcome you! We are thrilled to confirm that your application to contribute to the following project has been successful.";
+            templateParams.next_steps_paragraph = "Our project coordinator will be in contact with you shortly to discuss the next steps, including your start date and the project onboarding process.";
+            templateParams.closing_line = "We look forward to having you on the project.";
+
+        } else if (target.classList.contains('reject')) {
+            newStatus = 'rejected';
+            confirmMessage = 'Reject and notify applicant?';
+            
+            templateParams.email_title = "Thank You for Your Interest";
+            templateParams.main_paragraph = "Thank you for your interest in Lifewood and for taking the time to apply. After careful consideration, we have decided to move forward with other candidates whose qualifications more closely match the current needs of this project.";
+            templateParams.next_steps_paragraph = "This was a very competitive process, and we encourage you to apply for other positions in the future.";
+            templateParams.closing_line = "We wish you the best of luck in your job search.";
+        }
 
                 if (newStatus && confirm(confirmMessage)) {
                     target.disabled = true;
