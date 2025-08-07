@@ -3315,3 +3315,25 @@ body.modal-open {
 .confirm-btn-cancel:hover {
     background-color: #e0e0e0;
 }
+
+/* --- NEW: Dashboard Count Badge Styles --- */
+.count-badge {
+    display: inline-block;
+    margin-left: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    vertical-align: middle;
+    line-height: 1; /* Helps with vertical alignment */
+}
+
+.count-badge.pending {
+    background-color: #d9534f; /* Red */
+    color: white;
+}
+
+.count-badge.accepted {
+    background-color: var(--color-castleton-green); /* Green */
+    color: white;
+}
