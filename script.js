@@ -205,7 +205,7 @@ function initializeDashboard() {
                         const app = doc.data();
                         const acceptedOnDate = app.acceptedOn ? app.acceptedOn.toDate().toLocaleString() : 'N/A';
                         const row = document.createElement('tr');
-                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
+                        row.innerHTML = `<td>${index + 1}</td><td>${app.name}</td><td>${app.email}</td><td>${app.project}</td><td><a href="${app.resume}" target="_blank" rel="noopener noreferrer">View</a></td><td>${app.submittedOn.toDate().toLocaleString()}</td><td>${acceptedOnDate}</td><td>${app.availability}</td>`;
                         acceptedTableBody.appendChild(row);
                     });
                 }
@@ -312,6 +312,7 @@ function initializeDashboard() {
         });
 
         unresolvedTableBody.addEventListener('click', async (e) => {
+            const target = e.target;
             if (e.target && e.target.classList.contains('resolve')) {
                 const docId = e.target.dataset.docId;
                 try {
