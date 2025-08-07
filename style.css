@@ -3225,3 +3225,93 @@ body.modal-open {
     background-color: #d9534f; /* A strong red */
     color: white;
 }
+
+/* style.css */
+
+/* --- NEW: Custom Confirmation Modal Styles --- */
+
+/* The semi-transparent background overlay */
+.confirmation-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9998; /* Just below the notification pop-up */
+    background-color: rgba(19, 48, 32, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.confirmation-modal.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* The white pop-up box */
+.confirmation-modal-content {
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.confirmation-modal.is-active .confirmation-modal-content {
+    transform: scale(1);
+}
+
+/* The message text */
+.confirmation-modal-content p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--color-dark-serpent);
+    margin-top: 0;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* The container for the buttons */
+.confirmation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* General button styling */
+.confirm-btn {
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* The main "Confirm" button */
+.confirm-btn-confirm {
+    background-color: var(--color-castleton-green);
+    color: white;
+}
+.confirm-btn-confirm:hover {
+    background-color: #058a59;
+    transform: translateY(-2px);
+}
+
+/* The "Cancel" button */
+.confirm-btn-cancel {
+    background-color: #f0f0f0;
+    color: #444;
+}
+.confirm-btn-cancel:hover {
+    background-color: #e0e0e0;
+}
