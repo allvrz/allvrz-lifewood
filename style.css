@@ -3187,3 +3187,41 @@ body.modal-open {
 .action-btn.view:hover {
     background-color: #31b0d5;
 }
+
+/* --- NEW: Custom Notification Pop-up Styles --- */
+
+/* The main notification container */
+.notification-popup {
+    position: fixed; /* Stays on screen even when scrolling */
+    top: 20px;       /* Pushes it down from the top edge */
+    left: 50%;       /* Centers it horizontally */
+    transform: translate(-50%, -100px); /* Moves it up off-screen initially */
+    background-color: var(--color-dark-serpent);
+    color: var(--color-white);
+    padding: 16px 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 9999; /* Ensures it's on top of everything */
+    opacity: 0;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+}
+
+/* The state when the notification is visible */
+.notification-popup.show {
+    opacity: 1;
+    transform: translate(-50%, 0); /* Slides it down into view */
+}
+
+/* Color variant for success messages */
+.notification-popup.success {
+    background-color: var(--color-castleton-green);
+    color: white;
+}
+
+/* Color variant for error messages */
+.notification-popup.error {
+    background-color: #d9534f; /* A strong red */
+    color: white;
+}
